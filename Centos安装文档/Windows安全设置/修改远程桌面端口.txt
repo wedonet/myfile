@@ -1,0 +1,12 @@
+win2008远程桌面端口默认是用的是3389端口，但是由于安全考虑，经常我们安装好系统后一般都会考虑把原来的3389端口更改为另外的端口。
+本文以改为端口为22608商品为例，讲解一下具体操作过程。
+
+打开注册表： 运行regedit。
+
+找到：[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\Wds\rdpwd\Tds\tcp] 双击右边 PortNumber——点十进制——更改值为：22608 —— 点确定。
+
+然后找到： [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp] 双击右边 PortNumber——点十进制——更改值为：22608 —— 点确定。
+
+到些就改好了，然后记得要在防火墙设置一下开放刚刚改好的端口。
+
+重启电脑试下，原来的端口是不是不能登陆了，改用新的端口就可以正常远程登陆，远程登陆设置的时候记得要加上端口号哦（比如：原来远程桌面是直接用abc.com,更改端口号后应该是abc.com:22608)。
