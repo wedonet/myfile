@@ -193,6 +193,11 @@ php artisan config:cache
 
 
 //·ÖÒ³
+
+        $list->appends(['aid' => $activityid])
+                ->appends(object_to_array($search))
+                ->links();
+                
  ->paginate(18);
 
 <center>{!! $list->render() !!}</center>
