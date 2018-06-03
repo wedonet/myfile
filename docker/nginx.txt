@@ -1,0 +1,428 @@
+#删除全部容器
+
+docker stop $(docker ps -q) & docker rm $(docker ps -aq)
+
+#进入容器
+
+$ sudo docker exec -it 775c7c9ee1e1 /bin/bash  
+
+
+可以使用docker inspect来查看该容器的详细信息。
+
+    $ sudo docker inspect 44fc0f0582d9  
+
+#删除镜像
+
+docker image rm id
+
+
+#构建新的镜像，php带composer
+
+docker build -t php7_2:fpm-composer .   #ok
+
+# Docker-Composer
+
+curl -L https://github.com/docker/compose/releases/download/1.3.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+
+#查看php-fpm是否运行
+
+执行如下命令查看是否启动了php-fpm，如果没有则启动你的php-fpm即可
+netstat -ant | grep 9000
+
+	
+netstat -ant | grep 9000
+
+
+#从镜像建一个Nginx容器
+
+docker run \
+--name mynginx1 \
+-d -p 8081:80 \
+-v /usr/local/mynginx/html:/usr/share/nginx/html \
+-v /usr/local/mynginx/logs:/var/log/nginx \
+-v /usr/local/mynginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+-v /usr/local/mynginx/conf.d:/etc/nginx/conf.d \
+--network my-net \
+nginx
+
+
+
+# 从镜像建一个PHP容器
+
+以9001为例：
+docker run \
+--name myphp-fpm1 \
+-d -p 9000:9000 \
+-v /usr/local/mynginx/801/html:/www \
+-v /usr/local/myphp/801/etc/php:/usr/local/etc/php \
+-v /usr/local/myphp/801/logs:/phplogs \
+--network my-net \
+php:7.2-fpm
+
+
+#让容器时间和宿主机一致
+
+-v /etc/localtime:/etc/localtime \
+
+
+#从宿主机向容器复制文件
+
+docker cp host_path containerID:container_path
+
+
+=====================
+实验 以8082为例
+
+nginx
+
+docker run \
+--name mynginx2 \
+-d -p 8082:80 \
+-v /usr/local/mynginx/8082/html:/usr/share/nginx/html \
+-v /usr/local/mynginx/8082/logs:/var/log/nginx \
+-v /usr/local/mynginx/8082/nginx.conf:/etc/nginx/nginx.conf:ro \
+-v /usr/local/mynginx/8082/conf.d:/etc/nginx/conf.d \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+nginx
+
+
+php
+
+docker run \
+--name myphp-fpm2 \
+-d -p 9000:9000 \
+-v /usr/local/mynginx/8082/html:/www \
+-v /usr/local/myphp/8082/etc/php:/usr/local/etc/php \
+-v /usr/local/myphp/8082/logs:/phplogs \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+php:7.2-fpm
+
+
+
+
+docker run \
+--name myphp-fpm2 \
+-d -p 9000:9000 \
+-v /usr/local/mynginx/8082/html:/www \
+-v /usr/local/myphp/8082/etc/php:/usr/local/etc/php \
+-v /usr/local/myphp/8082/logs:/phplogs \
+php:7.2-fpm
+
+========================
+8083 配置 ok
+
+docker run \
+--name mynginx8083 \
+-d -p 8083:80 \
+-v /usr/local/8083/nginx/html:/usr/share/nginx/html \
+-v /usr/local/8083/nginx/logs:/var/log/nginx \
+-v /usr/local/8083/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+-v /usr/local/8083/nginx/conf.d:/etc/nginx/conf.d \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+nginx:1.13
+
+
+php
+
+docker run \
+--name myphp-fpm8083 \
+-d -p 9000:9000 \
+-v /usr/local/8083/nginx/html:/www \
+-v /usr/local/8083/php/etc/php:/usr/local/etc/php \
+-v /usr/local/8083/php/logs:/phplogs \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+php:7.2-fpm
+
+
+
+
+=============================
+laravel
+
+8083 配置 测试 9001
+
+docker run \
+--name mynginx8083 \
+-d -p 8083:80 \
+-v /usr/local/8083/nginx/html/public:/usr/share/nginx/html \
+-v /usr/local/8083/nginx/logs:/var/log/nginx \
+-v /usr/local/8083/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+-v /usr/local/8083/nginx/conf.d:/etc/nginx/conf.d \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+nginx:1.13
+
+
+php
+
+docker run \
+--name myphp-fpm8083 \
+-d -p 9001:9000 \
+-v /usr/local/8083/nginx/html/public:/www \
+-v /usr/local/8083/php/etc/php:/usr/local/etc/php \
+-v /usr/local/8083/php/logs:/phplogs \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+php:7.2-fpm
+
+
+
+==================================
+从镜像构建新的镜像
+docker build -t php2:mytag .
+
+
+=================================
+运行新的镜像
+
+docker run \
+--name php-fpm_3_1 \
+-d -p 9003:9000 \
+php3
+
+
+
+
+======================
+Done
+
+docker build -t php7_2:fpm-composer .   #ok
+
+
+docker run \
+--name php-fpm8083 \
+-d -p 9000:9000 \
+-v /usr/local/8083/nginx/html:/www \
+-v /usr/local/8083/php/etc/php:/usr/local/etc/php \
+-v /usr/local/8083/php/logs:/phplogs \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+php7_2:fpm-composer
+
+
+docker run \
+--name mynginx8083 \
+-d -p 8083:80 \
+-v /usr/local/8083/nginx/html:/usr/share/nginx/html \
+-v /usr/local/8083/nginx/logs:/var/log/nginx \
+-v /usr/local/8083/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+-v /usr/local/8083/nginx/conf.d:/etc/nginx/conf.d \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+nginx:1.13
+
+======================
+Doing
+
+docker run \
+--name php-fpm8083 \
+-d -p 9000:9000 \
+-v /usr/local/8083/nginx/html/public:/www \
+-v /usr/local/8083/php/etc/php:/usr/local/etc/php \
+-v /usr/local/8083/php/logs:/phplogs \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+php7_2:fpm-composer
+
+
+docker run \
+--name mynginx8083 \
+-d -p 8083:80 \
+-v /usr/local/8083/nginx/html:/usr/share/nginx/html \
+-v /usr/local/8083/nginx/logs:/var/log/nginx \
+-v /usr/local/8083/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+-v /usr/local/8083/nginx/conf.d:/etc/nginx/conf.d \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+nginx:1.13
+
+
+composer config -g repo.packagist composer https://packagist.phpcomposer.com
+
+=======================================
+docker run \
+--name php1 \
+-d -p 9001:9000 \
+php:7.2-fpm
+
+docker-php-ext-install
+
+bcmath bz2 calendar ctype curl dba dom enchant exif fileinfo filter ftp gd gettext gmp hash iconv imap interbase intl json ldap mbstring mysqli oci8 odbc opcache pcntl pdo pdo_dblib pdo_firebird pdo_mysql pdo_oci pdo_odbc pdo_pgsql pdo_sqlite pgsql phar posix pspell readline recode reflection session shmop simplexml snmp soap sockets sodium spl standard sysvmsg sysvsem sysvshm tidy tokenizer wddx xml xmlreader xmlrpc xmlwriter xsl zend_test zip
+
+
+docker build -t php7_2-5:fpm-composer .
+
+
+
+从镜像生成容器
+
+docker run \
+--name p4 \
+-i -t \
+centos 
+
+
+把容器保存成镜像
+
+docker commit \
+--author "YiLinSun" \
+--message "装完PHP" \
+ae6d3a2d1d24 \
+centos_php:v3
+
+
+
+docker commit \
+--author "YiLinSun" \
+--message "PHP和Composer都可以正常运行" \
+ae6d3a2d1d24 \
+centos_php:v4
+
+
+#查看镜像的信息：docker inspect [镜像名称或者镜像id]
+
+sudo docker inspect fengzheng/ubuntu
+或者
+sudo docker inspect 085243761c41
+
+
+# 查看docker资源占用
+
+docker stats <ID>
+
+
+
+
+=================
+docker commit \
+--author "YiLinSun" \
+--message "PHP和Composer都可以正常运行，设置systemctl" \
+ae6d3a2d1d24 \
+centos_php:v5
+
+
+docker run \
+--name p5 \
+--privileged \
+-d \ #不能用-it, 否则docker会卡死
+centos_php:v5 \
+/usr/sbin/init
+
+
+docker run \
+--name p4_1 \
+--privileged \
+-i -t \
+centos_php:v4
+
+
+nginx
+
+docker run \
+--name n5 \
+-d -p 8085:80 \
+-v /usr/local/8085/nginx/html/public:/usr/share/nginx/html \
+-v /usr/local/8085/nginx/logs:/var/log/nginx \
+-v /usr/local/8085/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+-v /usr/local/8085/nginx/conf.d:/etc/nginx/conf.d \
+--network my-net \
+nginx
+
+
+docker commit \
+--author "YiLinSun" \
+--message "装完PHP" \
+p5 \
+centos_php:v6
+
+
+
+docker run \
+--name p6 \
+--privileged \
+-d -p 9000:9000 \
+-v /usr/local/8085/nginx/html/public:/var/www \
+--network my-net \
+centos_php:v6 \
+/usr/sbin/init
+
+
+
+
+我也遇到了这个问题。通过curl 9000端口，发现访问不通，才发现listen配置的有问题。
+
+修改php-fpm所在容器的php/etc/php-fpm.d/www.conf文件：
+;listen = 127.0.0.1:9000
+listen = 0.0.0.0:9000
+
+
+2018/5/15 星期二 8088
+=================================
+/usr/local/php7_1_3/etc
+
+docker run \
+--name nginx8 \
+-d -p 8088:80 \
+-v /usr/local/8088/nginx/html/public:/usr/share/nginx/html \
+-v /usr/local/8088/nginx/logs:/var/log/nginx \
+-v /usr/local/8088/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+-v /usr/local/8088/nginx/conf.d:/etc/nginx/conf.d \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+nginx
+
+
+docker run \
+--name php8 \
+--privileged \
+-d -p 9000:9000 \
+-v /usr/local/8088/nginx/html/public:/var/www \
+-v /usr/local/8088/php/etc:/usr/local/php7_1_3/etc \
+-v /usr/local/8088/php/logs:/var/phplogs \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+centos_php:v8 \
+/usr/sbin/init
+
+2018/5/15 星期二
+==================================
+/usr/local/php7_1_3/etc
+
+docker run \
+--name nginx9 \
+-d -p 8089:80 \
+-v /usr/local/8089/nginx/html/public:/usr/share/nginx/html \
+-v /usr/local/8089/nginx/logs:/var/log/nginx \
+-v /usr/local/8089/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+-v /usr/local/8089/nginx/conf.d:/etc/nginx/conf.d \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+nginx
+
+
+docker run \
+--name php9 \
+--privileged \
+-d -p 9000:9000 \
+-v /usr/local/8089/nginx/html:/var/www \
+-v /usr/local/8089/php/etc:/usr/local/php7_1_3/etc \
+-v /usr/local/8089/php/logs:/var/phplogs \
+-v /etc/localtime:/etc/localtime \
+--network my-net \
+centos_php:v8 \
+/usr/sbin/init
+
+
+
+============================
+docker commit \
+--author "YiLinSun" \
+--message "重装php,openssl生效了" \
+php9 \
+centos_php:v9

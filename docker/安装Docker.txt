@@ -1,0 +1,37 @@
+﻿#安装工具包
+
+yum -y install yum-utils
+
+
+
+#更新Yum源
+
+yum-config-manager \
+--add-repo \
+https://mirrors.ustc.edu.cn/docker-ce/linux/centos/docker-ce.repo
+
+yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+
+#
+
+如果需要最新版本的 Docker CE 请使用以下命令：
+
+$ sudo yum-config-manager --enable docker-ce-edge
+
+#
+
+安装 Docker CE
+
+更新 yum 软件源缓存，并安装 docker-ce。
+
+$ sudo yum makecache fast
+$ sudo yum install docker-ce
+
+
+
+#================================
+安装docker-compose方法
+
+1. 上传二进制文件至 /usr/local/bin/  下，改名为docker-compose
+
+2. 增加执行权限 sudo chmod +x /usr/local/bin/docker-compose

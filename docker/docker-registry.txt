@@ -1,0 +1,21 @@
+#运行仓库镜像
+
+docker run \
+--name registry \
+--restart=always \
+--restart=always \
+-d -p 5000:5000 \
+-v /opt/data/registry:/var/lib/registry \
+-v /etc/localtime:/etc/localtime \
+registry
+
+
+
+#标记本地镜像
+docker tag centos_php:v9 localhost:5000/centos_php:v9
+
+
+
+#push镜像
+
+docker push localhost:5000/centos_php:v9

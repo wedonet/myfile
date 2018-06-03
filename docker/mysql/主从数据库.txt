@@ -1,0 +1,7 @@
+1. 在主库创建用户, 用于从库登录
+
+create user 'repl'@'192.168.101.13' identified by 'Abc_123456'; 
+
+mysql>set global validate_password_policy=0;#修改mysql密码级别(可以设置8位以上的任意代码)
+
+mysql>grant all on *.* to repl@"%" identified by "Abc_123456" 

@@ -1,0 +1,24 @@
+docker run -p 3309:3306 \
+--name mysql9 \
+-v /usr/local/8089/mysql/conf:/etc/mysql/conf.d \
+-v /usr/local/8089/mysql/logs:/logs \
+-v /usr/local/8089/mysql/data:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=123456 \
+--network my-net \
+-d mysql:5.7.17
+
+
+==================
+
+
+
+
+
+$ docker run --name some-mysql
+
+-v /my/custom:/etc/mysql/conf.d 
+-e MYSQL_ROOT_PASSWORD=my-secret-pw
+-d mysql:tag
+
+
+/my/own/datadir:/var/lib/mysql

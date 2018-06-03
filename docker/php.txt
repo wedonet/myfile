@@ -1,0 +1,37 @@
+docker run \
+--name myphp-fpm4 \
+-d -p 8094:9000 \
+-v /usr/local/mynginx/html:/www \
+-v /usr/local/myphp/etc/php:/usr/local/etc/php \
+-v /usr/local/myphp/logs:/phplogs \
+php:7.2-fpm
+
+
+808=94
+
+
+
+docker exec -i -t df5e /bin/bash
+
+
+
+以9001为例：
+docker run \
+--name myphp-fpm1 \
+-d -p 9000:9000 \
+-v /usr/local/mynginx/801/html:/www \
+-v /usr/local/myphp/801/etc/php:/usr/local/etc/php \
+-v /usr/local/myphp/801/logs:/phplogs \
+php:7.2-fpm
+
+
+
+
+docker run \
+--name mynginx1 \
+-d -p 801:80 \
+-v /usr/local/mynginx/801/html:/usr/share/nginx/html \
+-v /usr/local/mynginx/801/logs:/var/log/nginx \
+-v /usr/local/mynginx/801/nginx.conf:/etc/nginx/nginx.conf:ro \
+-v /usr/local/mynginx/801/conf.d:/etc/nginx/conf.d \
+nginx

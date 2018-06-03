@@ -1,0 +1,1 @@
+centos_for_php centos装好了php依赖软件

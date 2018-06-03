@@ -1,0 +1,61 @@
+立即定位到 MySQL 数据文件的存储位置方法，即在 MySQL 客户端键入如下命令：
+
+	
+show global variables like "%datadir%";
+
+
+/var/lib/mysql/
+
+================================================
+
+$ docker run --name some-mysql \
+-e MYSQL_ROOT_PASSWORD=mysecretpassword \
+--network my-net \
+-d mysql
+
+
+
+docker run -p 3309:3306 \
+--name mysql9 \
+-v /usr/local/8089/mysql/conf:/etc/mysql/conf.d \
+-v /usr/local/8089/mysql/logs:/logs \
+-v /usr/local/8089/mysql/data:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=123456 \
+--network my-net \
+-d mysql:5.7.17
+
+
+
+======================================
+主库
+docker run -p 4001:3306 \
+--name mysql_master \
+-v /usr/local/mysql/master/conf:/etc/mysql/conf.d \
+-v /usr/local/mysql/master/data:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=123456 \
+-d mysql:5.7.17
+
+
+从库
+docker run -p 4002:3306 \
+--name mysql_slave1 \
+-v /usr/local/mysql/slave1/conf:/etc/mysql/conf.d \
+-v /usr/local/mysql/slave1/data:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=123456 \
+-d mysql:5.7.17
+
+
+1.错误日志(Error Log)
+2.二进制日志(Binary Log & Binary Log Index)
+3.通用查询日志(query log)
+4.慢查询日志(slow query log)
+5.Innodb的在线 redo 日志(innodb redo log)
+6.更新日志(update log)
+
+
+
+--------------------------------------
+docker run -p 4011:3306 \
+--name mysql_test1 \
+-e MYSQL_ROOT_PASSWORD=123456 \
+-d mysql:5.7.17

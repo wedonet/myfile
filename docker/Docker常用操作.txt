@@ -1,0 +1,158 @@
+docker ps
+
+#查看所有容器
+
+docker ps -a
+
+
+# 进入容器
+
+其中字符串为容器ID:
+
+docker exec -it d27bd3008ad9 /bin/bash
+
+    
+#.停用全部运行中的容器:
+
+docker stop $(docker ps -q)
+
+
+#.删除全部容器：
+
+docker rm $(docker ps -aq)
+
+    1
+
+3.一条命令实现停用并删除容器：
+
+docker stop $(docker ps -q) & docker rm $(docker ps -aq)
+
+
+从容器复制文件
+
+docker cp 65bc23f952db:/etc/nginx/ /Users/roverliang/docker_study/etc/
+
+
+4. 进入容器
+
+docker exec -i -t df5e /bin/bash
+
+
+5. 容器IP的查方法
+
+docker inspect 容器ID或容器名 |grep '"IPAddress"'
+
+
+#Docker镜像
+
+vim /etc/docker/daemon.json 这个json文件不存在的，不需要担心，直接编辑
+把下面的贴进去，保存，重启即可
+
+{
+  "registry-mirrors": [ "https://o49zj9t8.mirror.aliyuncs.com"]
+}
+
+6. 保存容器为镜像
+
+docker commit \
+--author "YilinSun 16216077@qq.com" \
+--message "全局调用php" \
+php8 \
+centos_php:v8
+
+#. 删除仓库中的镜像
+
+curl -I -X DELETE http://192.168.0.153:5000/v2/fbgweb/manifests/sha256:6a67ba482a8dd4f8143ac96b1dcffa5e45af95b8d3e37aeba72401a5afd7ab8e
+
+curl -I -X DELETE http://172.16.32.55:5000/v2/centos_php:7.13/manifests/sha256:6a67ba482a8dd4f8143ac96b1dcffa5e45af95b8d3e37aeba72401a5afd7ab8e
+
+
+#.  解决无法Pull私有仓库镜像
+
+这个方法不好用
+
+修改 /usr/lib/systemd/system/docker.service，加入信任地址
+
+ExecStart=/usr/bin/dockerd --insecure-registry 172.16.32.59:5000
+
+应该采取
+
+修改 /etc/docker/daemon.json
+
+{
+   "insecure-registries": [
+      "172.16.32.55:5000"
+   ],
+   "registry-mirrors": [
+      "https://o49zj9t8.mirror.aliyuncs.com"
+   ]
+}
+
+
+#. 从远程复制文件
+
+scp -P 12768 wedonet@172.16.32.35:/usr/local/nginx/html/xinlianyun/xinlianyun.tar.gz /usr/local/workspace/810_xinlianyun/web
+
+
+# linux 如何打包当前文件下所有文件包括隐藏文件
+
+命令如下：
+
+cd /root/test/
+
+tar czvf test.tar.gz    .[!.]*    *
+
+解说下：
+
+tar czvf test.tar.gz *         压缩当前文件夹下非隐藏文件的文件
+
+tar czvf test.tar.gz  .[!.]*   压缩当前文件夹下隐藏文件排除两个隐藏文件夹"."和“..”
+
+tar czvf test.tar.gz    .[!.]*    * 压缩当前文件夹下所有文件
+
+排除的如图，然后会把上一级的文件也打包进来了。
+
+# 解压
+
+tar -xzvf file.tar.gz //解压tar.gz
+
+
+
+scp -P 12768 wedonet@172.16.32.35:/usr/local/nginx/html/xinlianyun/xinlianyun.tar.gz /usr/local/workspace/810_xinlianyun/web
+
+
+格式化查看容器
+#===========================
+docker ps --format "table {{.ID}}\t {{.Image}}\t {{.Status}}\t {{.Names}}"
+
+格式化选项(–format)使用Go模板来美化打印容器输出。
+Go模板有效的占位符如下：
+.ID 容器ID
+.Image 镜像ID
+.Command Quoted command
+.CreatedAt 创建容器的时间点.
+.RunningFor 从容器创建到现在过去的时间.
+.Ports 暴露的端口.
+.Status 容器状态.
+.Size 容器占用硬盘大小.
+.Names 容器名称.
+.Labels 容器所有的标签.
+.Label 指定label的值 例如'{{.Label “com.docker.swarm.cpu”}}’
+.Mounts 挂载到这个容器的数据卷名称
+
+示例1：
+
+    $ docker ps --format "{{.ID}}: {{.Command}}"
+     
+     
+    a87ecb4f327c: /bin/sh -c #(nop) MA
+    01946d9d34d8: /bin/sh -c #(nop) MA
+    c1d3b0166030: /bin/sh -c yum -y up
+    41d50ecd2f57: /bin/sh -c #(nop) MA
+
+
+#防火墙
+========================================================
+firewall-cmd --list-ports
+
+firewall-cmd --zone=public --add-port=80/tcp --permanent
