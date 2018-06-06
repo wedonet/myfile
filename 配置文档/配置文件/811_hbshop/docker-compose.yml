@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+
+   nginx:
+      image: nginx:1.13
+      ports:
+         - "811:80" #分配一个端口
+      restart: always
+      volumes:
+         - ./web/public:/usr/share/nginx/html
+         - ./nginx/logs:/var/log/nginx
+         - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+         - ./nginx/conf.d:/etc/nginx/conf.d
+         - /etc/localtime:/etc/localtime
+      networks:
+         - my-net
+
+   php:
+      image: 172.16.32.59:5000/centos_php_7.13:latest
+      ports:
+         - "9011:9000"
+      restart: always
+      volumes:
+         - ./web:/var/www
+         - ./php/etc:/usr/local/php7_1_3/etc
+         - ./php/logs:/var/phplogs
+         - /etc/localtime:/etc/localtime
+      privileged: true
+      command:
+         - /usr/sbin/init
+      networks:
+         - my-net
+
+   mysql:
+      image: mysql:5.7.17
+      ports:
+         - 3011:3306
+      restart: always
+      volumes:
+         - ./mysql/conf:/etc/mysql/conf.d
+         - ./mysql/data:/var/lib/mysql
+         - /etc/localtime:/etc/localtime
+      environment:
+         MYSQL_ROOT_PASSWORD: oUHYAV72E7LVORBPwOdFoA
+      networks:
+         - my-net
+
+networks:
+   my-net:

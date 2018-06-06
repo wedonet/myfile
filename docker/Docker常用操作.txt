@@ -156,3 +156,9 @@ Go模板有效的占位符如下：
 firewall-cmd --list-ports
 
 firewall-cmd --zone=public --add-port=80/tcp --permanent
+
+
+#数据库迁移
+========================================================
+mysqldump -h 地址 -P 端口 -u user_name -p 123456 database_name > outfile_name.sql
+source outfile_name.sql
