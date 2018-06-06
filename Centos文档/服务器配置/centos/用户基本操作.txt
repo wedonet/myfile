@@ -1,0 +1,26 @@
+第一种情况：还未建立用户时，可以使用以下命令
+
+1，groupadd groupname
+
+useradd -g groupname username -s /bin/false   //-s为默认shell，不给shell，也就不能登录
+
+2，groupadd groupname
+
+useradd -g groupname username -s /sbin/nologin    //-s为默认shell，默认给予shell，但是不给登录shell
+
+第二种情况：当用户已经建立了，在建立时没有控制，现在需要取消用户登录权限，可以使用以下命令
+
+切换到root用户，修改/etc/passwd文件
+
+vi /etc/passwd
+
+找到你要修改的用户所在的那一行，例如username:x:502:502::/home/username:/bin/bash，修改为以下代码
+
+username:x:502:502::/home/username:/sbin/nologin
+
+
+
+
+#查登录日志
+
+/var/log/audit/audit.log，

@@ -1,0 +1,23 @@
+#如果主服务器在使用用，可以锁定数据库禁止写入，配好后再解锁
+mysql>flush tables with read lock;
+mysql>unlock tables;
+
+
+
+#备份数据库
+
+
+#加日志
+
+
+#打开
+
+
+
+
+转到从服务器
+
+#导入数据库
+
+#开启从服务器
+

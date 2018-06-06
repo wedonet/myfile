@@ -1,0 +1,7 @@
+150网络参数
+
+名称		状态			设备名						连接性
+
+		
+Function 0	网络4			Broadcom NetXtreme Gigabit Ethernet #2		Internet访问
+Function 1	网络3,共享的		Broadcom NetXtreme Gigabit Ethernet		无法联接到Internet

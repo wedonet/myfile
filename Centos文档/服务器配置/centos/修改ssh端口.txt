@@ -1,0 +1,66 @@
+参考： http://blog.csdn.net/jasper_success/article/details/38537049
+
+注意！这里的Centos版本是7
+
+step1 修改/etc/ssh/sshd_config
+
+vi /etc/ssh/sshd_config
+
+#Port 22 //这行去掉#号
+
+Port51866//下面添加这一行
+
+为什么不先删除22，以防其他端口没配置成功，而又把22的删除了，无法再次进入服务器
+
+step2 修改SELinux
+
+使用以下命令查看当前SElinux 允许的ssh端口：
+
+semanage port -l | grep ssh
+
+添加51866端口到 SELinux
+
+semanage port -a -t ssh_port_t -p tcp 51866
+
+然后确认一下是否添加进去
+
+semanage port -l | grep ssh
+
+如果成功会输出
+
+ssh_port_t tcp 51866, 22
+
+step3 重启ssh
+
+systemctl restart sshd.service
+
+
+
+
+#Step4 防火墙开放51866端口
+
+firewall-cmd --permanent --zone=public --add-port=51866/tcp
+
+然后测试试试，能不能通过51866登录，若能登录进来，说明成功，接着删除22端口
+
+vi /etc/ssh/sshd_config
+
+删除22端口 wq
+
+systemctl restart sshd
+
+
+
+
+
+#同时防火墙也关闭22端口
+
+firewall-cmd --permanent --zone=public --remove-port=22/tcp
+
+firewall-cmd --reload
+
+
+
+然后再进行测试，看看22端口是不是不可以登录了
+
+登录的时候，ssh test@ip -p 51866

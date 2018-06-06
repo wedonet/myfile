@@ -1,0 +1,47 @@
+ 下载Java(JDK<最新版> - X64.tar.gz)通过访问以下链接 http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads1880260.html.
+
+然后JDK-7u71-linux-x64.tar.gz将被下载到系统。
+第2步
+
+一般来说，在下载文件夹中的Java文件。使用下面的命令提取 jdk-7u71-linux-x64.gz文件。
+
+$ cd Downloads/ 
+$ ls 
+jdk-7u71-linux-x64.gz 
+$ tar zxf jdk-7u71-linux-x64.gz 
+$ ls 
+jdk1.7.0_71   jdk-7u71-linux-x64.gz 
+
+第3步
+
+为了使Java提供给所有用户，将它移动到目录 “/usr/local/”。打开根目录，键入以下命令。
+
+$ su 
+password: 
+# mv jdk1.7.0_71 /usr/local/ 
+# exit 
+
+第4步
+
+用于设置PATH和JAVA_HOME变量，添加以下命令到~/.bashrc文件。
+
+export JAVA_HOME=/usr/local/jdk1.7.0_71 
+export PATH=PATH:$JAVA_HOME/bin 
+
+
+
+vi /etc/profile
+
+在此文件最后添加如下代码
+
+JAVA_HOME=/usr/local/jdk1.8.0_171
+PATH=$JAVA_HOME/bin:$PATH
+
+export JAVA_HOME PATH
+
+
+
+执行下面的代码，让设置立即生效
+
+
+source /etc/profile

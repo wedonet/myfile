@@ -1,0 +1,11 @@
+使用chrony
+
+配置文件位置 /etc/chrony.conf
+
+#修改后重启chrony
+
+systemctl restart chronyd
+
+#查看联接情况
+
+chronyc sources

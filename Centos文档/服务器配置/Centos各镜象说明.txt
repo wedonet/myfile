@@ -1,0 +1,31 @@
+*Centos 64 Base
+
+ 刚装好的centos7精简版
+
+
+*Centos 64 Base_Update
+
+进行了内核升级，并设了固定IP 
+
+
+*Centos64 Safe
+
+安装了nettools
+
+进行了Centos安全加固
+
+
+
+#Centos64 Git
+
+安装git的服务器
+
+
+
+#Centos64 Nginx
+
+负载均衡服务器
+
+
+
+

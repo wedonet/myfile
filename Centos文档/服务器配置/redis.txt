@@ -1,0 +1,10 @@
+windows 下
+
+简单，复制.dll，再改php.ine,重启
+
+
+
+linux下
+
+
+https://www.cnblogs.com/xiewenming/p/7687364.html

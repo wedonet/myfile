@@ -1,0 +1,9 @@
+在Linux中wheel组就类似于一个管理员的组。
+
+根据应用的实例不同应用wheel组的方法也不同。这里对于服务器来说，我们希望的是剥夺被加入到wheel组用户以外的普通用户通过su命令来登录为root的机会（只有属于wheel组的用户才可以用su登录为root）。这样就进一步增强了系统的安全性。具体步骤如下:
+1）修改 /etc/pam.d/su 文件，找到“auth            required        pam_wheel.so use_uid
+”这一行，将行首的“#”去掉。
+
+
+2）修改 /etc/login.defs 文件，在最后一行增加“SU_WHEEL_ONLY yes”语句。
+然后，用“usermod -G wheel 用户名”将一个用户添加到wheel组中。

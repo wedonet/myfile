@@ -1,0 +1,418 @@
+背景：
+
+继上次介绍 初识 MySQL 5.6 新功能、参数完之后，刚好MySQL 5.7又GA了，在官方测试里看到，MySQL5.7在功能、性能、可用性、安全和监控上又提升了很高。现在看看和MySQL5.6对比，新增参数可以看上一篇文章，本文来说明MySQL5.7关于账号安全方面的新特性：（后续持续更新）
+
+1，账号安全相关的特性 
+
+1.1：创建用户
+
+5.7版本的用户表mysql.user要求plugin字段非空，且默认值是mysql_native_password认证插件，并且不再支持mysql_old_password认证插件。5.7用户长度最大为32字节，之前最大长度为16字节，并且CREATE USER 和 DROP USER 命令里实现了 IF [NOT] EXISTS 条件判断。5.7之后用户通过grant创建用户报warning。如：
+复制代码
+
+grant all on *.* to dxy@localhost identified by 'dxy';
+Query OK, 0 rows affected, 1 warnings (0.00 sec)
+
+show warnings; 
++---------+------+---------------------------------------------------------------+
+| Level   | Code | Message                                                                                                                            |
++---------+------+---------------------------------------------------------------+
+| Warning | 1287 | Using GRANT for creating new user is deprecated and will be removed in future release. Create new user with CREATE USER statement. |
++---------+------+---------------------------------------------------------------+
+2 rows in set (0.01 sec)
+
+复制代码
+
+提示grant创建账户的语法将会被删除，用cerate user代替，创建用户分2步：创建和授权。
+
+先通过create user 创建用户：
+复制代码
+
+#明文密码创建
+CREATE USER 'dxy'@'localhost' IDENTIFIED BY '123456';
+等同
+CREATE USER 'dxy'@'localhost' IDENTIFIED WITH 'mysql_native_password' BY '123456';
+
+#加密密码创建
+CREATE USER 'dxy'@'localhost' IDENTIFIED BY PASSWORD '*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9'; --will be removed in a future release
+等同
+CREATE USER 'dxy'@'localhost' IDENTIFIED WITH 'mysql_native_password' AS '*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9';
+
+复制代码
+
+再通过grant来授权：
+
+grant select,insert,update,delete on dba_test.* to dxy@localhost;
+
+注意：授权管理用户的时候，不止只有all的权限，还要包括with grant option和proxy的权限。proxy权限需要在代理用户的时候用到。
+复制代码
+
+查看默认管理用户权限：
+show grants for root@localhost;  ----2条记录                                                                                                                                                      +---------------------------------------------------------------------+                                         |
++---------------------------------------------------------------------+
+| GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION |
+| GRANT PROXY ON ''@'' TO 'root'@'localhost' WITH GRANT OPTION        |
++---------------------------------------------------------------------+
+
+新建管理账号：
+create user dba@127.0.0.1 identified by '123456';
+
+授权：
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'127.0.0.1' WITH GRANT OPTION;
+
+授proxy权：创建代理用户的时候需要
+GRANT PROXY ON ''@'' TO 'dba'@'127.0.0.1' WITH GRANT OPTION;
+
+查看：
+show grants for 'dba'@'127.0.0.1';
++--------------------------------------------------------------------+
+| GRANT ALL PRIVILEGES ON *.* TO 'dba'@'127.0.0.1' WITH GRANT OPTION |
+| GRANT PROXY ON ''@'' TO 'dba'@'127.0.0.1' WITH GRANT OPTION        |
++--------------------------------------------------------------------+
+
+复制代码
+
+查看用户权限：
+复制代码
+
+show grants for dxy@localhost;
++---------------------------------------------------------------------------+
+| Grants for dxy@localhost                                                  |
++---------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO 'dxy'@'localhost'                                   |
+| GRANT SELECT, INSERT, UPDATE, DELETE ON `dba_test`.* TO 'dxy'@'localhost' |
++---------------------------------------------------------------------------+
+
+复制代码
+
+查看用户密码：
+
+show create user dxy@localhost;
++----------------------------------------------------------------------------------+
+| CREATE USER 'dxy'@'localhost' IDENTIFIED WITH 'mysql_native_password' AS '*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9' REQUIRE NONE PASSWORD EXPIRE DEFAULT ACCOUNT UNLOCK |
++----------------------------------------------------------------------------------+
+
+1.2：密码过期策略
+
+为用户设置密码过期时间，一定时间以后，强制用户修改密码。可以直接在create user的时候设置，也可以alter user设置：
+PASSWORD EXPIRE DEFAULT　　 	默认，过期时间受全局变量default_password_lifetime控制
+PASSWORD EXPIRE NEVER 	永不过期
+PASSWORD EXPIRE INTERVAL N DAY　　 	N天后过期
+PASSWORD EXPIRE 	过期
+
+ 
+
+ 
+
+ 
+
+直接创建用户的时候设置：
+create user dxy@localhost identified by '123456' password expire interval 10 day; ---- 10天后过期
+
+对已有用户设置
+alter user zjy@localhost password expire never; ----永不过期
+
+注意：设置一个用户过期后，登陆会有提示修改密码，不能进行任何操作：适用让程序不能访问数据库。
+复制代码
+
+设置用户密码过期：
+alter user dxy@localhost password expire;
+
+执行任何命令报错：
+ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.
+
+解决办法：重置密码 
+alter user dxy@localhost identified by '123456';
+
+复制代码
+
+1.2.1：密码安全策略
+
+为防止用户设置过简单的密码，mysql在5.6开始就已经支持了密码安全策略的插件：
+
+没有开启安全策略的时候，能成功为用户设置一个简单的密码：
+
+mysql> grant all on *.* to dxy@localhost identified by '123';
+Query OK, 0 rows affected(0.00 sec)
+
+开启密码安全策略，2种方法：
+
+① 在配置文件里修改：
+
+[mysqld]
+plugin-load=validate_password.so
+validate-password=FORCE_PLUS_PERMANENT
+
+② 在线修改
+
+mysql> INSTALL PLUGIN validate_password SONAME 'validate_password.so';
+Query OK, 0 rows affected (0.01 sec)
+
+开启安全策略的时候，不能为用户设置一个简单的密码：
+
+mysql> grant all on *.* to dxy@localhost identified by '123';
+ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+
+相关参数：
+
+validate_password_policy：
+
+表示密码策略，可设置的值有：
+1：0 or LOW 仅需需符合密码长度（由参数validate_password_length指定）
+
+2：1 or MEDIUM 满足LOW策略，同时还需满足至少有1个数字，小写字母，大写字母和特殊字符，默认。
+
+3：2 or STRONG 满足MEDIUM策略，同时密码不能存在字典文件（dictionary file）中
+
+validate_password_dictionary_file：
+
+在STRONG模式下还能设置字典文件，字典中存在的密码不得使用。可以通过参数validate_password_dictionary_file来设置字典文件
+
+validate_password_length：
+
+设置密码的最小长度，默认值为8
+
+validate_password_mixed_case_count：
+
+小写和大写字符的最小数目，如果密码策略是MEDIUM或STRONG的，有validate_password插件检查，默认1。
+
+validate_password_number_count：
+
+数字字符的最小数目，如果密码策略是MEDIUM或STRONG的，有validate_password插件检查，默认1。
+
+validate_password_special_char_count：
+
+非字母字符（特殊字符）的最小数目，如果密码策略是MEDIUM或STRONG的，有validate_password插件检查，默认1。
+
+根据上面的参数，按照自己想要的密码复杂度，进行设置。更多信息可以看官方文档和MYSQL密码审计插件。
+
+1.3：锁定禁用用户 alter user
+
+当某些场景需要"锁"住用户，暂时禁用某个用户：适用让程序不能访问数据库。 
+复制代码
+
+设置锁定用户：
+alter user dxy@localhost account lock;
+
+登陆报错：
+ERROR 3118 (HY000): Access denied for user 'dxy'@'localhost'. Account is locked.
+
+解决办法：解锁用户
+alter user dxy@localhost account unlock;
+
+复制代码
+
+1.4 代理用户
+
+基于mysql_native_password的认证插件自带了代理用户的功能。代理用户相当于“代理”其他用户的权限，这样很方便的把一个账号的权限授予其他账号，而不需要每个账号都需要执行授权操作。开启代理用户的功能需要开启参数：check_proxy_users 和 mysql_native_password_proxy_users
+复制代码
+
+创建原始账号：
+create user dxy@127.0.0.1 identified by '123456';
+授权：
+grant all on test.* to dxy@127.0.0.1;
+创建代理账号：
+create user dxy_proxy@127.0.0.1 identified by '123456';
+授权代理权限：
+grant proxy on dxy@127.0.0.1 to  dxy_proxy@127.0.0.1;
+查看：
+show grants for dxy_proxy@127.0.0.1;
++-------------------------------------------------------------+
+| GRANT USAGE ON *.* TO 'dxy_proxy'@'127.0.0.1'               |
+| GRANT PROXY ON 'dxy'@'127.0.0.1' TO 'dxy_proxy'@'127.0.0.1' |
++-------------------------------------------------------------+
+
+复制代码
+
+用代理账号登陆测试：
+复制代码
+
+查看登陆账号：代理账号current_user()，原始账号user()
+select user(),current_user();
++---------------------+----------------+
+| user()              | current_user() |
++---------------------+----------------+
+| dxy_proxy@127.0.0.1 | dxy@127.0.0.1  |
++---------------------+----------------+
+
+查看权限：发现代理账号的权限显示的是原始账号的权限
+show grants;
++-------------------------------------------------------+                                                                                                                                                                +-------------------------------------------------------+
+| GRANT USAGE ON *.* TO 'dxy'@'127.0.0.1'               |
+| GRANT ALL PRIVILEGES ON `test`.* TO 'dxy'@'127.0.0.1' |
++-------------------------------------------------------+
+
+验证代理账号是否有test库的权限：
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| test               |
++--------------------+
+mysql> use test
+mysql> show tables;
++----------------+
+| Tables_in_test |
++----------------+
+| tttt           |
++----------------+
+mysql> select * from tttt;                                                                                                                                                           +------+
+| id   |
++------+
+|    1 |
+|  100 |
++------+
+mysql> insert into tttt values(2),(200);
+mysql> select * from tttt;
++------+
+| id   |
++------+
+|    1 |
+|  100 |
+|    2 |
+|  200 |
++------+
+验证得出代理账号(dxy_proxy)代理了原始账号(dxy)的权限。
+
+复制代码
+
+1.5：其他选项：SSL、MAX_QUERIES_PER_HOUR、MAX_UPDATES_PER_HOUR、MAX_CONNECTIONS_PER_HOUR、MAX_USER_CONNECTIONS。当需要限制账号通过ssl登陆，需要添加require，当需要限制资源，需要添加with：
+
+create user dxy@localhost identified by '123456' require SSL with MAX_QUERIES_PER_HOUR 100 MAX_USER_CONNECTIONS 100 password expire never account unlock;
+
+2，外部相关的安全
+
+2.1：MySQL5.7已经删除了test数据库，默认安装完后是没有test数据库，原先任何用户都可以访问test数据库，增加安全隐患。
+
+2.2：MySQL5.7提供了更为简单SSL安全访问配置，并且默认连接就采用SSL的加密方式。在5.7之前，生成SSL相关文件需要自己手动创建，可以查看这篇文章，5.7之后MySQL通过mysql_ssl_rsa_setup可以直接生成了： 
+复制代码
+
+root@t20:~# mysql_ssl_rsa_setup 
+Generating a 2048 bit RSA private key
+.................................+++
+....................+++
+writing new private key to 'ca-key.pem'
+-----
+Generating a 2048 bit RSA private key
+......+++
+..............................+++
+writing new private key to 'server-key.pem'
+-----
+Generating a 2048 bit RSA private key
+.........................................................................................+++
+..+++
+writing new private key to 'client-key.pem'
+-----
+
+复制代码
+
+可以在数据目录下面看到一些以pem结尾的文件，而这些文件就是开启SSL连接所需要的文件(注意文件权限)，之后用账号
+
+默认登陆：
+复制代码
+
+root@t20:/var/lib/mysql# mysql -udba -p -h127.0.0.1
+Enter password: 
+mysql> \s
+--------------
+mysql  Ver 14.14 Distrib 5.7.12, for Linux (x86_64) using  EditLine wrapper
+
+Connection id:        4
+Current database:    
+Current user:        dba@localhost
+SSL:            Cipher in use is DHE-RSA-AES256-SHA
+...
+...
+
+复制代码
+
+强制ssl登陆：
+复制代码
+
+root@t20:~# mysql -udba -p -h127.0.0.1 --ssl=1            
+WARNING: --ssl is deprecated and will be removed in a future version. Use --ssl-mode instead.
+Enter password: 
+mysql> \s
+--------------
+mysql  Ver 14.14 Distrib 5.7.12, for Linux (x86_64) using  EditLine wrapper
+
+Connection id:        10
+Current database:    
+Current user:        dba@localhost
+SSL:            Cipher in use is DHE-RSA-AES256-SHA
+...
+...
+
+复制代码
+
+从上面看到均已ssl登陆，若在创建用户时，希望该用户每次必须通过SSL方式，则需在创建用户通过REQUIRE SSL来进行设置，上面已经介绍。姜承尧文章中的测试案例显示开启SSL性能开销在25%左右：MySQL的SSL加密连接与性能开销 
+
+2.3：MySQL5.7开始建议用户使用 mysqld --initialize来初始化数据库，放弃之前的mysql_install_db的方式，新的方式只创建了一个root@localhost的用户，随机密码保存在~/.mysql_secret文件中，第一次使用必须reset password。
+
+初始化数据库：新建实例。
+mysqld --initialize --datadir=/var/lib/mysql3309/
+
+2.4：MySQL5.7 sql_mode的变更，
+
+5.7默认的sql_mode
+
+select @@sql_mode;
+ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+
+5.7之前默认的sql_mode
+
+select @@sql_mode;
+NO_ENGINE_SUBSTITUTION
+
+看到在5.7中sql_mode更加严格。解释下各个mode的含义：
+
+ONLY_FULL_GROUP_BY　　
+	不要让GROUP BY部分中的查询指向未选择的列　　
+
+STRICT_TRANS_TABLES
+	 为事务存储引擎启用严格模式，也可能为非事务存储引擎启用严格模式
+NO_ZERO_IN_DATE 	在严格模式，不接受月或日部分为0的日期
+NO_ZERO_DATE 	在严格模式，不将 '0000-00-00'做为合法日期
+ERROR_FOR_DIVISION_BY_ZERO 	在严格模式，在INSERT或UPDATE过程中，如果被零除(或MOD(X，0))，则产生错误　　
+NO_AUTO_CREATE_USER 	防止GRANT自动创建新用户，除非还指定了密码
+NO_ENGINE_SUBSTITUTION 	如果需要的存储引擎被禁用或未编译，可以防止自动替换存储引擎
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+在默认情况下5.7的情况：
+复制代码
+
+----对于datetime类型<NO_ZERO_DATE>：
+插入"0000-00-00 00:00:00"值，会报错：Incorrect datetime value
+----对于varchar/char类型<STRICT_TRANS_TABLES>：
+插入字符串超出长度，会报错： Data too long for column...
+----对于not null的列<STRICT_TRANS_TABLES>：
+插入不指定not null的列会报错：Field 'xxx' doesn't have a default value ' 
+----对于grant<NO_AUTO_CREATE_USER>：
+授权一个用户，不指定密码会报错：Can't find any matching row in the user table '
+----对于engine存储引擎<NO_ENGINE_SUBSTITUTION>：
+创建一个不支持的存储引擎，不会转换为默认的存储引擎，直接报错：Unknown storage engine ... Using storage engine InnoDB for table '...'
+
+复制代码
+
+注意：在一个主从环境下，为保证数据的一致性，一定要设置主从的sql_mode一样，在数据迁移的时候也要保证sql_mode的一致，不然复制和迁移遇到上面的限制均会失败，所以尽可能使用标准SQL语法。
+
+MySQL错误信息总结： 
+View Code
+
+3，总结： 
+
+      在MySQL 5.7中，有不少安全性相关的改进：创建账号分2步：用create user来建立账号（账号长度加大），用grant 来授权；初始数据库的时候密码不为空；账号可以锁和可以设置密码过期；test库被删除；默认提供ssl连接；sql_mode增强等。文章从这些方面进行了介绍和测试，进一步加深对MySQL5.7的认识，本文只是说了一些自己比较关注的，比较详细的请见 What’s New in MySQL 5.7，后续会持续更新说明。

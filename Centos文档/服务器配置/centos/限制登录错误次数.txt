@@ -1,0 +1,64 @@
+CentOS中有一个pam_tally2.so的PAM模块，来限定用户的登录失败次数，如果次数达到设置的阈值，则锁定用户。
+vim /etc/pam.d/login (本地登录限制)
+在开头增加
+auth required pam_tally2.so deny=3 lock_time=300 even_deny_root root_unlock_time=10
+
+限制sshd登录错误次数
+这个只是限制了用户从tty登录，而没有限制远程登录，如果想限制远程登录，需要改SSHD文件
+
+# vim /etc/pam.d/sshd
+
+#%PAM-1.0 
+
+auth          required        pam_tally2.so        deny=3  unlock_time=300 even_deny_root root_unlock_time=10
+
+
+
+
+查看用户登录失败的次数
+
+    [root@node100 pam.d]# pam_tally2 --user redhat 
+    Login           Failures Latest failure     From 
+    redhat              7    07/16/12 15:18:22  tty1 
+
+
+解锁指定用户
+
+    [root@node100 pam.d]# pam_tally2 -r -u redhat 
+    Login           Failures Latest failure     From 
+    redhat              7    07/16/12 15:18:22  tty1 
+
+
+
+
+
+
+
+
+
+
+
+*.　ssh认证次数限制：
+
+/etc/ssh/sshd_config
+
+MaxAuthTries=3   这仅是超过3次验证错误断开连接。
+
+
+
+3.限制SSH过期时间：
+
+/etc/ssh/sshd_config
+
+ClientAliveInterval 60
+
+ClientAliveCountMax 60
+
+
+
+
+# 解锁指定用户
+
+pam_tally2 -r -u root  
+
+Login Failures Latest failure From  

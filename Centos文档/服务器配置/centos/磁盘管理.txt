@@ -1,0 +1,56 @@
+1、首先查看磁盘使用情况
+[root@jb51.net~]# df -h
+文件系统　　　　　　　　　　　　　　容量　已用　可用　已用%　挂载点
+Filesystem　　　　　　　　　　　　Size　Used　Avail　Use%　Mounted on
+/dev/mapper/VolGroup-lv_root　　154G　7.9G　139G　　6%　/
+tmpfs　　　　　　　　　　　　　　　1.9G　100K　1.9G　　1%　/dev/shm
+/dev/sda1　　　　　　　　　　　　　485M　69M　391M　　15%　/boot
+/dev/mapper/VolGroup-lv_home　　299G　984M　283G　　1%　/home目标：将VolGroup-lv_home缩小到20G，并将剩余的空间添加给VolGroup-lv_root
+
+
+2. 查看目录剩余空间
+
+
+df -lh
+
+3. 卸载/home    
+
+umount /home
+
+如果提示无法卸载，则是有进程占用/home，使用如下命令来终止占用进程：
+fuser -m /home
+
+
+
+可以使用ssm进行管理j
+
+ 安装ssm
+yum install system-storage-manager
+
+
+
+# 查看分区
+ssm list
+
+# 卸载home
+umount /home
+
+# 删除逻辑卷home
+ssm remove /dev/centos/home
+
+# 查看释放出来的空间，并增加到root上
+ssm list
+ssm resize -s +1.76T /dev/centos/root
+
+# 还需要使用xfs_growfs扩容文件系统
+ssm list
+xfs_growfs /dev/centos/root
+
+# 最后，要把fstab中挂载home的一行删掉
+vi /etc/fstab
+
+
+
+附 添加进存储池
+
+$ sudo ssm add -p <pool-name> <device>

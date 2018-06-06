@@ -1,0 +1,167 @@
+### 在安装前查看是否已安装vsftpd
+
+方法一
+[root@localhost ~]# rpm -q vsftpd
+vsftpd-3.0.2-21.el7.x86_64
+ 
+方法二
+[root@localhost ~]# vsftpd -v
+vsftpd: version 3.0.2
+ 
+# 安装 vsftpd
+[root@localhost ~]# yum -y install vsftpd
+
+
+
+
+
+
+### 修改ftp默认主目录
+
+vim  /etc/vsftpd/vsftpd.conf
+
+local_root=/usr/local/nginx/html
+chroot_local_user=YES
+anon_root=/usr/local/nginx/html
+allow_writeable_chroot=YES
+anon_other_write_enable=YES
+
+
+
+
+
+### 修改目录权限
+
+vsftpd 服务器报错：500 OOPS: vsftpd: refusing to run with writable root inside chroot()
+2013-10-13 10:03:45
+标签：500 vsftpd OOPS 服务器报错
+
+今天安装vsftp服务器，在修改了 chroot_local_user 属性以后，发现进行客户端访问的时候会报错：500 OOPS: vsftpd: refusing to run with writable root inside chroot()
+
+到网上查了资料,得到解决问题方法如下：
+
+"如果启用chroot,必须保证ftp根目录不可写,这样对于ftp根直接为网站根目录的用户不方便,所以建议假如ftp根目录是/home/${cjh},则将访问权限改写如下
+
+chmod a-w /home/cjh
+
+
+
+
+### 修改vsftpd配置
+
+write_enable=YES
+
+anon_mkdir_write_enable=YES
+
+anon_other_write_enable=YES
+
+
+### 防火墙增加ftp服务
+
+firewall-cmd --permanent --zone=public --add-service=ftp
+
+
+### 关于Selinux
+
+setsebool -P allow_ftpd_full_access  1
+
+
+
+重启ftp: service vsftpd start
+
+
+
+    启动／重新启动ftp
+
+service vsftpd start
+service vsftpd restart
+
+    设置开机启动ftp
+
+chkconfig vsftpd on
+
+    防火墙配置(iptables)
+
+vi /etc/sysconfig/iptables
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 21 -j ACCEPT
+
+    防火墙重新启动
+
+    建立ftp账户
+
+useradd -d /path/you/want -s /sbin/nologin ftpadmin
+
+    修改密码
+
+passwd ftpadmin
+
+    设置账户权限
+
+chown -R ftpadmin.ftpadmin /path/you/set
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+关闭firewall和SELinux
+
+	
+setenforce 0  # 设置SELinux 成为permissive模式 （关闭SELinux）
+setenforce 1  # 设置SELinux 成为enforcing模式  （开启SELinux）
+ 
+# 或者修改配置
+vi /etc/selinux/config
+# SELINUX=enforcing
+# 注释掉
+# SELINUXTYPE=targeted
+# 注释掉
+SELINUX=disabled
+# 增加
+:wq! #保存退出
+setenforce 0
+
+或者设置SELinux
+
+	
+getsebool -a | grep ftp
+setsebool -P ftpd_full_access on
+
+	
+systemctl stop firewalld.service
+#停止firewall
+systemctl disable firewalld.service
+#禁止firewall开机启动
+
+如果你不愿意关闭防火墙，需要防火墙添加FTP服务。
+
+	
+firewall-cmd --permanent --zone=public --add-service=ftp
+firewall-cmd --reload
+
+
+
+
+
+通过 getsebool -a | grep ftp我们可以看到selinux是禁止了所有的ftp服务，为了能正常使用我们需要将
+
+ftp_home_dir,ftpd_connection_db 两个boolean变量设为true　　　　　　
+
+(ps：如果不开启这项将不能上传和下载文件哦！O(∩_∩)O~）
+
+通过以上设置我们终于可以使用ftp服务啦！在windows下测试如下　　　　　　

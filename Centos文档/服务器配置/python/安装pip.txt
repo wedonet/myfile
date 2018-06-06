@@ -1,0 +1,7 @@
+$$ 如果pip安装后提示依然没有pip命令，需在在添加环境变量
+
+# vim /etc/profile
+
+在文档最后，添加:
+
+export PATH="/usr/local/python2.7/bin:$PATH"

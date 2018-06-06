@@ -1,0 +1,419 @@
+﻿安装必须组件
+yum install gc 
+yum install gcc 
+yum install gcc-c++ 
+yum install gd-devel
+yum install pcre-devel 
+yum install zlib-devel 
+yum install openssl-devel
+yum install pspell-devel  ?
+
+
+yum install libXpm-devel ?
+yum install libc-client-devel ?
+yum install libjpeg-devel ?
+yum install libpng-devel ?
+yum install libiconv-devel ?
+yum install mcrypt ?
+yum install mhash ?
+yum install mhash-devel ?
+yum install mysql-devel
+
+yum install freetype-devel  ?
+yum install libxml2?
+yum install libxml2-devel
+yum install openssl
+yum install openssl-devel ?
+yum install curl-devel
+yum install libxslt-devel
+yum install libmcrypt-devel ?
+
+
+yum  install  php-mcrypt  libmcrypt  libmcrypt-devel
+
+
+yum install epel-release  //扩展包更新包
+
+
+yum  update //更新yum源
+
+yum clean all
+yum makecache
+
+
+
+
+
+       
+
+
+
+
+./configure --prefix=/usr/local/php7 --with-config-file-path=/usr/local/php7/etc --with-config-file-scan-dir=/usr/local/php7/etc/php.d --with-mcrypt=/usr/include --enable-mysqlnd --with-mysqli --with-pdo-mysql --enable-fpm --with-fpm-user=nginx --with-fpm-group=nginx --with-gd --with-iconv --with-zlib --enable-xml --enable-shmop --enable-sysvsem --enable-inline-optimization --enable-mbregex --enable-mbstring --enable-ftp --enable-gd-native-ttf --with-openssl --enable-pcntl --enable-sockets --with-xmlrpc --enable-zip --enable-soap --without-pear --with-gettext --enable-session --with-curl --with-jpeg-dir --with-freetype-dir --enable-opcache
+
+
+
+
+
+
+转换一下是：
+
+./configure \
+--prefix=/usr/local/php7_1_3 \
+--with-config-file-path=/usr/local/php7_1_3/etc \
+--with-config-file-scan-dir=/usr/local/php7_1_3/etc/php.d \
+--with-mcrypt=/usr/include \
+--enable-mysqlnd \
+--with-mysqli \
+--with-pdo-mysql \
+--enable-fpm \
+--with-fpm-user=nginx \
+--with-fpm-group=nginx \
+--with-gd \
+--with-iconv \
+--with-zlib \
+--enable-xml \
+--enable-shmop \
+--enable-sysvsem \
+--enable-inline-optimization \
+--enable-mbregex \
+--enable-mbstring \
+--enable-ftp \
+--enable-gd-native-ttf \
+--with-openssl \
+--enable-pcntl \
+--enable-sockets \
+--with-xmlrpc \
+--enable-zip \
+--enable-soap \
+--without-pear \
+--with-gettext \
+--enable-session \
+--with-curl \
+--with-jpeg-dir \
+--with-freetype-dir \
+--enable-opcache
+
+make && make install
+
+
+
+
+
+三、开始配置（php-fpm）
+
+
+
+cd /usr/local/php #进入编译目录
+
+　　6、修改相关配置文件
+
+　　　　6.1 cp /usr/local/php/etc/php.ini.default /usr/local/php/etc/php.ini #php.ini中相关配置依项目需要自行修改，配置nginx支持php参考http://php.net/manual/zh/install.unix.nginx.php
+
+　　　　6.2 cp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.conf #去掉[global]项下pid前的;
+
+　　　　6.3 cp /usr/local/php/etc/php-fpm.d/www.conf.default /usr/local/php/etc/php-fpm.d/www.conf #大致在23、24行修改user和group如：user = nginx，group = nginx
+
+　　7、chmod 777 /usr/local/php/var/run #默认PID文件是写在/usr/local/php/var/run这个目录中，所以修改目录权限
+
+　　8、sbin/php-fpm #启动php, 可通过sbin/php-fpm -h 查看相关操作命令列表
+
+　　9、在/usr/lib/systemd/system目录下新建php-fpm.service文件，这样就可以通过systemctl stop|start|reload php-fpm.service来操作php-fpm，内容如下：
+
+    [Unit]
+    Description=The PHP FastCGI Process Manager
+    After=syslog.target network.target
+
+    [Service]
+    Type=simple
+    PIDFile=/run/php-fpm.pid
+    ExecStart=/usr/local/php7/sbin/php-fpm --nodaemonize --fpm-config /usr/local/php7/etc/php-fpm.conf
+    ExecReload=/bin/kill -USR2 $MAINPID
+    ExecStop=/bin/kill -SIGINT $MAINPID
+
+    [Install]
+    WantedBy=multi-user.target
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+3.1 copy默认配置文件
+复制代码
+
+# cd /source/php-7.0.2
+# cp php.ini-development /lnmp/php/etc/php.ini
+
+# cd /lnmp/php/etc
+# cp php-fpm.conf.default php-fpm.conf
+
+# cd /lnmp/php/etc/php-fpm.d/
+# cp www.conf.default www.conf
+
+复制代码
+
+ 
+
+3.2 运行php-fpm
+
+# /lnmp/php/sbin/php-fpm -c /lnmp/php/etc/php.ini
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2017/2/13
+
+2.1 修改nginx.conf
+
+# vim nginx.conf
+
+ 
+
+2.2 找到如下内容，并删除红色标记的字符
+复制代码
+
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        #
+        #location ~ \.php$ {
+        #    root           html;
+        #    fastcgi_pass   127.0.0.1:9000;
+        #    fastcgi_index  index.php;
+        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+        #    include        fastcgi_params;
+        #}
+
+复制代码
+
+ 
+
+2.3 修改完成
+复制代码
+
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        #
+        location ~ \.php$ {
+            root           html;
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+            include        fastcgi_params;
+        }
+
+
+
+
+
+	二、常用命令
+
+ 
+
+ 
+
+ 
+
+php-fpm常用命令
+
+启动php-fpm
+
+# /lnmp/php/sbin/php-fpm -c /lnmp/php/etc/php.ini
+
+ 
+
+重启php-fpm
+
+# kill -SIGUSR2 `cat /lnmp/php/var/run/php-fpm.pid`
+
+ 
+
+关闭php-fpm
+
+# kill -SIGINT `cat /lnmp/php/var/run/php-fpm.pid`
+
+
+==========================================================
+
+
+#让php全局可调用
+
+打开/etc/profile
+
+添加一行：export PATH=/usr/local/php7/bin/:$PATH
+
+立即生效
+
+source /etc/profile
+
+
+
+linux 每次关机后重启，对于输入java,hadoop,scala等命令都说没有该命令，醉了！每次都要手动source /etc/profile才好。
+
+
+解决办法：直接敲入：gedit .bashrc，在文件中加入source /etc/profile 这行语句就行啦
+
+
+source .bashrc
+
+也可以放在~/.bashrc里面。或者在~/.bashrc里面加一句source /etc/profile
+==========================================================
+
+
+$安装composer
+
+Composer安装说明_小组_ThinkSAAS
+
+Composer安装常用方法总结（未包含Windows）
+独立安装Composer教程
+
+composer.json 声明PHP依赖的第三方扩展的文件
+
+加载该文件需要安装composer, composer是php的一个类库依赖管理机制, 类似Ruby 的 Gem 运行composer需要 php 5.3以上版本, 并且确定PHP CURL 扩展可用
+
+为了获取Composer，我们需要做两件事。第一个是安装Composer（前面说过了，这意味下载它到你的项目中）：
+
+$ curl -sS https://getcomposer.org/installer | php
+
+
+报错
+
+
+将composer设为全局 则只需安装一份composer 设为全局后也无需 php composer.phar 来执行 可直接 composer install 来安装包
+
+$ sudo mv composer.phar /usr/local/bin/composer
+
+这会检查一些PHP设置，然后下载composer.phar到你的工作目录中。 这个文件是Composer二进制文件。它是一个PHAR (PHP archive)，PHP的归档格式，也可以像其他命令一样在命令行上运行。
+
+如果要使用composer 安装 composer.json 中包含的内容 命令如下
+
+$ php composer.phar install OR $ composer install
+
+更新依赖库文件使用:
+
+$ php composer.phar update OR $ composer update
+
+关于composer使用的相关参考资料:
+
+
+
+
+
+
+CentOS下yum安装mcrypt错误：No package php-mcrypt available.解决方法
+时间：2015-07-29 11:40:51      阅读：778      评论：0      收藏：0      [点我收藏+]
+
+标签：
+错误描述：
+
+    #yum install libmcrypt libmcrypt-devel mcrypt mhash
+    Setting up Install Process
+    No package php-mcrypt available.
+    Error: Nothing to do
+
+我们会看到centos yum从仓库中根本找不到这几个包。但我不想使用源码编译就想使用yum安装，怎么办？
+
+解决方法：
+
+    yum  install epel-release  //扩展包更新包
+    yum  update //更新yum源
+   y
+  就ok了
+
+$ groupadd nginx
+$ useradd -g nginx -M nginx
+
+
+
+
+
+
+
+Docker下配置PHP
+
+centos7 docker容器报 docker Failed to get D-Bus connection 错误
+2017年06月29日 21:22:33
+阅读数：2395
+
+在centos7的docker容器里面不能用service启动服务。
+
+
+systemctl start httpd
+
+
+报错内容：Failed to get D-Bus connection: Operation not permitted。
+
+网上查询资料，说在docker run容器的时候加上 --privileged 参数，然而并无卵用。
+
+
+报这个错的原因是dbus-daemon没能启动。systemctl并不是不能使用。将CMD或者entrypoint设置为/usr/sbin/init即可。docker容器会自动将dbus等服务启动起来。如下：
+
+
+docker run --privileged -ti --name test  docker.io/centos:7  /usr/sbin/init
+
+
+
+
+===============================
+在docker下没openssl生效,重新编译安装一下
+
+进入openssl的解压目录
+
+
+3、运行phpize
+
+/usr/local/php7/bin/phpize
+
+4、执行安装
+
+[html] view plain copy
+
+    ./configure --with-openssl --with-php-config=/usr/local/php7/bin/php-config  
+
+
+./configure --with-openssl \
+--with-php-config=/usr/local/php7_1_3/bin/php-config
+
+
+/usr/local/php7_1_3/lib/php/extensions/no-debug-non-zts-20160303/
+
+
+
+
+
+==================================
+#php-m 查看组件安装情况
+
+
+#composer 切换到国内镜像
+
+composer config -g repo.packagist composer https://packagist.phpcomposer.com
+
+#composer要修改权限
+
+chmod 744 修改composer文件的权限

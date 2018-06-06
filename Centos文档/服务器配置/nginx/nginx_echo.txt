@@ -1,0 +1,27 @@
+﻿个模块不包含在 Nginx 源码中，安装方法：
+
+1. 首先下载模块源码：https://github.com/agentzh/echo-nginx-module/tags
+2. 解压到某个路径，假设为 /path/to/echo-nginx-module
+3. 使用下面命令编译并安装 Nginx
+
+
+
+    $ tar -xzvf nginx-1.0.11.tar.gz  
+    $ cd nginx-1.0.11/  
+      
+    $ ./configure --prefix=/usr/local/nginx --with-http_ssl_module --add-module=/path/to/echo-nginx-module  
+      
+    $ make -j2  
+    $ make install  
+
+
+开始使用echo module.
+
+[plain] view plain copy
+
+    location /hello {  
+        default_type 'text/javascript';   //如果没有这个default_type,则会一直下载文件而不是输出在浏览器上  
+        echo  $echo_client_request_headers;  
+        echo_read_request_body;  
+        echo $request_body;  
+      }  

@@ -1,0 +1,6 @@
+# Æô¶¯sersync
+
+/usr/local/sersync/sersync2 -r -d -o /usr/local/sersync/confxml.xml
+
+
+

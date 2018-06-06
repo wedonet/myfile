@@ -1,0 +1,39 @@
+windows实现端口映射
+原创 2016年03月31日 11:48:54
+
+装了虚拟机,想吧服务映射出来,但是vmware自带的映射很不好用,
+一、查询端口映射情况
+netsh interface portproxy show v4tov4
+查询这个IP所有的端口映射。
+netsh interface portproxy show v4tov4|find "192.168.1.1"
+二、增加一个端口映射
+netsh interface portproxy add v4tov4 listenport=外网端口 listenaddress=主IP connectaddress=私网IP connectport=私网IP端口
+例如：
+netsh interface portproxy add v4tov4 listenport=8888 listenaddress=118.123.13.180 connectaddress=192.168.1.10 connectport=2222
+三、删除一个端口映射
+netsh interface portproxy delete v4tov4 listenaddress=主IP listenport=外网端口
+例如：
+netsh interface portproxy delete v4tov4 listenaddress=118.123.13.180 listenport=8888
+
+
+
+
+netsh interface portproxy add v4tov4 listenport=443 listenaddress=192.168.1.150 connectaddress=172.16.32.49 connectport=443
+
+
+netsh interface portproxy add v4tov4 listenport=80 listenaddress=123.150.143.150 connectaddress=172.16.32.49 connectport=80
+
+
+netsh interface portproxy add v4tov4 listenport=1826 listenaddress=192.168.1.253 connectaddress=192.168.198.159 connectport=1626
+netsh interface portproxy delete v4tov4 listenaddress=192.168.1.253  listenport=1826
+
+
+netsh interface portproxy add v4tov4 listenport=1831 listenaddress=192.168.1.253 connectaddress=192.168.198.159 connectport=1626
+
+
+netsh interface portproxy delete v4tov4 listenaddress=123.150.143.150  listenport=80
+
+netsh interface portproxy delete v4tov4 listenaddress=123.150.143.150  listenport=443
+
+
+netsh interface portproxy add v4tov4 listenport=80 listenaddress=123.150.143.150 connectaddress=172.16.32.49 connectport=1626

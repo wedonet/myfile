@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<head version="2.5">
+    <host hostip="localhost" port="8008"></host>
+    <debug start="false"/>
+    <fileSystem xfs="false"/>
+    <filter start="false">
+        <exclude expression="(.*)\.svn"></exclude>
+        <exclude expression="(.*)\.gz"></exclude>
+        <exclude expression="^info/*"></exclude>
+        <exclude expression="^static/*"></exclude>
+    </filter>
+    <inotify>
+        <delete start="true"/>
+        <createFolder start="true"/>
+        <createFile start="false"/>
+        <closeWrite start="true"/>
+        <moveFrom start="true"/>
+        <moveTo start="true"/>
+        <attrib start="false"/>
+        <modify start="false"/>
+    </inotify>
+
+    <sersync>
+        <localpath watch="/home/lee/rsync">
+            <remote ip="192.168.198.102" name="common"/>
+            <!--<remote ip="192.168.8.39" name="tongbu"/>-->
+            <!--<remote ip="192.168.8.40" name="tongbu"/>-->
+        </localpath>
+        <rsync>
+            <commonParams params="-artuz"/>
+            <auth start="true" users="lee" passwordfile="/root/passwd"/>
+            <userDefinedPort start="false" port="873"/><!-- port=874 -->
+            <timeout start="false" time="3"/><!-- timeout=100 -->
+            <ssh start="false"/>
+        </rsync>
+        <failLog path="/tmp/rsync_fail_log.sh" timeToExecute="60"/><!--default every 60mins execute once-->
+        <crontab start="true" schedule="600"><!--600mins-->
+            <crontabfilter start="false">
+                <exclude expression="*.php"></exclude>
+                <exclude expression="info/*"></exclude>
+            </crontabfilter>
+        </crontab>
+        <plugin start="false" name="command"/>
+    </sersync>
+
+
+
+</head>

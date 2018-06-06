@@ -1,0 +1,22 @@
+# 执行composer命令composer update时遇到：Script php artisan clear-compiled handling the pre-update-cmd event returned with error code 1
+
+找到的解决方法为：
+
+composer update --no-scripts
+
+composer dump-autoload -o
+
+最后执行
+
+composer update
+
+# [2002] No route to host 
+
+
+# 清除缓存
+
+php artisan cache:clear
+php artisan config:clear
+
+
+composer dump-autoload

@@ -1,0 +1,66 @@
+﻿用户名 root 密码：Zh_123456
+
+gitlab 常用命令
+1.gitlab-ctl start
+2.gitlab-ctl stop
+3.gitlab-ctl status
+4.gitlab-ctl restart
+
+Gitlab 默认的日志文件存放在/var/log/gitlab 目录下:
+1.gitlab-ctl tail #查看所有日志
+ 
+2.gitlab-ctl tail nginx/gitlab_access.log #查看nginx访问日志
+
+# 添加SSH-key
+
+
+
+#gitlab备份与恢复
+
+ gitlab-rake gitlab:backup:create 
+
+
+
+注: 仅适用于使用  For omnibus installations 安装的gitlab
+
+1. 执行gitlab数据备份
+
+   默认备份文件储存在   /var/opt/gitlab/backups/140623891_gitlab_backup.tar 
+
+[html] view plain copy
+
+    sudo gitlab-rake gitlab:backup:create  
+
+
+
+ 2. gitlab从备份中还原
+[html] view plain copy
+
+    sudo cp 140623891_gitlab_backup.tar  /var/opt/gitlab/backups/   
+    sudo gitlab-ctl stop unicorn  
+    sudo gitlab-ctl stop sidekiq  
+    sudo gitlab-rake gitlab:backup:restore BACKUP=140623891   -- 备份文件名的时间戳前缀  
+    sudo gitlab-ctl start  
+    sudo gitlab-rake gitlab:check SANITIZE=true  
+
+
+3. 配置定时任务 需重启cron服务
+
+[html] view plain copy
+
+    sudo crontab -e  
+    0 2 * * * /opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=1  
+
+
+4. 设置只保存最近7天的备份 
+    编辑 /etc/gitlab/gitlab.rb 配置文件,找到如下代码,删除注释 #  保存 
+[html] view plain copy
+
+    gitlab_rails['backup_keep_time'] = 604800  
+
+
+5. 重新加载gitlab配置文件
+
+[html] view plain copy
+
+    sudo gitlab-ctl reconfigure  

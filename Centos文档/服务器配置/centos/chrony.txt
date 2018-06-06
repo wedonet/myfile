@@ -1,0 +1,29 @@
+1、安装chrony时间同步服务（系统默认安装）#yum install chrony
+
+可以先查询一下是否有安装：
+
+[root@localhost etc]# rpm -qa |grep chrony
+
+
+2、配置时间同步服务：
+
+启动时间同步服务：# systemctl start chronyd.service
+
+配置时间同步源：# vi /etc/chrony.conf （加上红色部分）
+
+# Please consider joining the pool (http://www.pool.ntp.org/join.html).
+
+server 0.rhel.pool.ntp.org iburst
+
+server 1.rhel.pool.ntp.org iburst
+
+server 10.12.116.15 iburst
+
+
+重启时间同步服务：# systemctl restart chronyd.service
+
+查看时间同步状态：# systemctl status chronyd.service
+
+查看时间同步源：# chronyc sources -v
+
+查看时间同步源状态：# chronyc sourcestats -v
