@@ -1,6 +1,52 @@
+# 安装
+
+解压到 /usr/local/sersync下
+
+# 修改配置文件
+
+
 # 启动sersync
 
 /usr/local/sersync/sersync2 -r -d -o /usr/local/sersync/confxml.xml
 
 
+/usr/local/sersync/sersync2 -r -d -o /usr/local/sersync/confxml.xml
 
+
+sersync2 -r -d -o /usr/local/sersync/confxml.xml
+
+#开机启动
+
+
+#设置开机启动
+
+echo "/usr/local/sersync/sersync2 -r -d -o /usr/local/sersync/confxml.xml" >> /etc/rc.local 
+
+chmod +x /etc/rc.d/rc.local   #否则重启不执行
+
+
+# 设置环境变量：
+
+echo "export PATH=$PATH:/usr/local/sersync/bin/" >> /etc/profile 
+
+
+# 重启操作如下：
+
+killall /usr/local/sersync/sersync2 && /usr/local/sersync/sersync2 -r -d -o /usr/local/sersync/confxml.xml
+
+
+#修改可监控的最大目录数量：
+
+echo 50000000 > /proc/sys/fs/inotify/max_user_watches
+
+
+
+CMS服务器的sersync开机启动服务：默认启动
+
+确保接收端服务器配置完成、文件拷贝完成后再执行
+# echo "sersync2 -d -o /project/sersync/conf/webroot.xml" >> /home/project/.bash_profile
+
+
+查看状态
+
+ps aux | grep rersync

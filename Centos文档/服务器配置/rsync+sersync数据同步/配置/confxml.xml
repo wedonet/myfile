@@ -3,21 +3,18 @@
     <host hostip="localhost" port="8008"></host>
     <debug start="false"/>
     <fileSystem xfs="false"/>
-    <filter start="false">
-        <exclude expression="(.*)\.svn"></exclude>
-        <exclude expression="(.*)\.gz"></exclude>
-        <exclude expression="^info/*"></exclude>
-        <exclude expression="^static/*"></exclude>
+    <filter start="true">
+        <exclude expression="^aa/*"></exclude>
     </filter>
     <inotify>
         <delete start="true"/>
         <createFolder start="true"/>
-        <createFile start="false"/>
+        <createFile start="truee"/>
         <closeWrite start="true"/>
         <moveFrom start="true"/>
         <moveTo start="true"/>
-        <attrib start="false"/>
-        <modify start="false"/>
+        <attrib start="true"/>
+        <modify start="true"/>
     </inotify>
 
     <sersync>
@@ -35,9 +32,8 @@
         </rsync>
         <failLog path="/tmp/rsync_fail_log.sh" timeToExecute="60"/><!--default every 60mins execute once-->
         <crontab start="true" schedule="600"><!--600mins-->
-            <crontabfilter start="false">
-                <exclude expression="*.php"></exclude>
-                <exclude expression="info/*"></exclude>
+            <crontabfilter start="true">
+				<exclude expression="^aa/*"></exclude>              
             </crontabfilter>
         </crontab>
         <plugin start="false" name="command"/>
