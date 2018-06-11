@@ -1,11 +1,8 @@
- MySQL 5.7.13 主从同步
+MySQL 5.7.13 主从同步
 
 
- https://blog.csdn.net/github_26672553/article/details/52032964
+https://blog.csdn.net/github_26672553/article/details/52032964
 
-2016-07-26 09:59 227人阅读 评论(0) 收藏 举报
-分类：
-MySQL（53）
 
 环境
 主服务器 10.211.55.8
@@ -14,7 +11,9 @@ MySQL（53）
 给主服务器数据库新增用户
 
 
+登录
 
+mysql -h 172.16.32.59 -P 4014  -u root -p 
 
 create user 'repl'@'192.168.101.13' identified by 'Abc_123456'; 
 

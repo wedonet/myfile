@@ -9,17 +9,17 @@
     <inotify>
         <delete start="true"/>
         <createFolder start="true"/>
-        <createFile start="truee"/>
+        <createFile start="false"/>
         <closeWrite start="true"/>
         <moveFrom start="true"/>
         <moveTo start="true"/>
         <attrib start="true"/>
-        <modify start="true"/>
+        <modify start="false"/>
     </inotify>
 
     <sersync>
         <localpath watch="/home/lee/rsync">
-            <remote ip="192.168.198.102" name="common"/>
+            <remote ip="172.16.32.33" name="common"/>
             <!--<remote ip="192.168.8.39" name="tongbu"/>-->
             <!--<remote ip="192.168.8.40" name="tongbu"/>-->
         </localpath>
