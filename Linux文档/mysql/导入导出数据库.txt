@@ -26,6 +26,8 @@ mysqldump -u用户名 -p密码 数据库名 > 数据库名.sql
 #/usr/local/mysql/bin/   mysqldump -uroot -p abc > abc.sql
 敲回车后会提示输入密码
 
+mysqldump -h 172.16.32.49 -P 3306 -u root -p we_xuefen > we_xuefen_2018_06_08.sql
+
 2、只导出表结构
 mysqldump -u用户名 -p密码 -d 数据库名 > 数据库名.sql
 #/usr/local/mysql/bin/   mysqldump -uroot -p -d abc > abc.sql

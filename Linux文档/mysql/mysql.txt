@@ -448,6 +448,7 @@ drop database 名称
 
 
 #登录远程Mysql
+
 mysql -h ip -u root -p -P 3306例如：mysql -h 127.0.0.1 -u root -p -P 3306
 
 

@@ -5,7 +5,7 @@ services:
    nginx:
       image: nginx:1.13 #镜像名称和版本
       ports:
-         - "8090:80"
+         - "814:80"
       restart: always
       volumes:
          - ./web/public:/usr/share/nginx/html
@@ -16,10 +16,24 @@ services:
       networks:
          - my-net
 
+   mysql:
+      image: mysql:5.7.17
+      ports:
+         - 4014:3306
+      restart: always
+      volumes:
+         - ./mysql/conf:/etc/mysql/conf.d
+         - ./mysql/data:/var/lib/mysql
+         - /etc/localtime:/etc/localtime
+      environment:
+         MYSQL_ROOT_PASSWORD: w0F5649Z/3x2m8GMcsUUGQ
+      networks:
+         - my-net
+
    php:
       image: 172.16.32.59:5000/centos_php_7.13:latest
       ports:
-         - "9090:9000"
+         - "9014:9000"
       restart: always
       volumes:
          - ./web:/var/www
@@ -32,19 +46,7 @@ services:
       networks:
          - my-net
 
-   mysql:
-      image: mysql:5.7.17
-      ports:
-         - 4090:3306
-      restart: always
-      volumes:
-         - ./mysql/conf:/etc/mysql/conf.d
-         - ./mysql/data:/var/lib/mysql
-         - /etc/localtime:/etc/localtime
-      environment:
-         MYSQL_ROOT_PASSWORD: 9c69d475-5c21-3682-2601-aadc2f59c07e
-      networks:
-         - my-net
+
 
 networks:
    my-net:

@@ -1,0 +1,29 @@
+version: '3'
+services:
+  zabbix-mysql:
+    image: daocloud.io/library/mysql:8
+    container_name: zabbix-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=888888
+    restart: always
+    networks:
+       - my-net
+  zabbix-server:
+    image: monitoringartist/zabbix-xxl
+    container_name: zabbix-server
+    restart: always
+    depends_on:
+      - zabbix-mysql
+    ports:
+      - "813:80"
+
+    environment:
+      - ZS_DBHost=zabbix-mysql
+      - ZS_DBUser=root
+      - ZS_DBPassword=888888
+    networks:
+       - my-net
+networks:
+   my-net:
+     external:
+       name: my-net

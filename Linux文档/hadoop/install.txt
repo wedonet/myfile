@@ -1,0 +1,7 @@
+下载地址：
+
+http://mirror.bit.edu.cn/apache/hadoop/common/hadoop-2.8.4/hadoop-2.8.4.tar.gz
+
+
+
+1527728400 + 86400
