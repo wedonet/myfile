@@ -1,0 +1,9 @@
+# yum install rsync
+
+# systemctl enable rsyncd
+
+# systemctl start rsyncd
+
+
+rsync  -avz  --password-file=/root/passwd  /usr/lo68.198.102
+dcal/web/  repl@192.168.198.102::web_backup

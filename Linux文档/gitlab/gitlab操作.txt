@@ -7,6 +7,7 @@ gitlab 常用命令
 4.gitlab-ctl restart
 
 Gitlab 默认的日志文件存放在/var/log/gitlab 目录下:
+
 1.gitlab-ctl tail #查看所有日志
  
 2.gitlab-ctl tail nginx/gitlab_access.log #查看nginx访问日志

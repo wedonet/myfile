@@ -221,3 +221,33 @@ git标签常用操作
 
     命令git tag -d <tagname>可以删除一个本地标签；
     命令git push origin :refs/tags/<tagname>可以删除一个远程标签。
+
+
+
+#git提交
+
+git add是工作区->缓存区，git commit是缓存区->仓库。
+
+git commit -m "本次提交说明"：一次性将缓存区所有文件修改提交到仓库的当前分支。
+
+git commit -am "本次提交说明"：自动把所有已经跟踪过的文件缓存，并提交到仓库。常用于跳过git add步骤快速提交。
+
+git commit --amend "本次提交说明"：重新提交。此次提交代替上一次提交的结果。尤其
+
+作者：daking
+链接：https://www.jianshu.com/p/e4e29c9c3bd9
+來源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+    git show：查看最后一个提交的内容。
+    git show HEAD~1：查看倒数第二个提交的内容。
+    git show 提交版本号：查看指定提交的内容。
+
+
+
+
+    git reset --hard：重置所有文件到上次commit的状态。
+    git reset --hard HEAD~1：将当前分支重置为倒数第2个版本。
+    git reset --hard 提交版本号：将当前分支重置为指定版本。

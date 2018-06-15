@@ -1,0 +1,38 @@
+#手动备份
+
+gitlab-rake gitlab:backup:create
+
+
+#恢复
+
+
+）停止相关数据连接服务
+
+[root@code-server backups]# gitlab-ctl stop unicorn
+
+
+[root@code-server backups]# gitlab-ctl stop sidekiq
+
+[root@code-server backups]# gitlab-ctl status
+  
+2）现在通过之前的备份文件进行恢复
+
+  
+scp -P 12768 wedonet@172.16.32.47:/var/opt/gitlab/backups/1528947455_2018_06_14_10.0.4_gitlab_backup.tar   /usr/local/workspace/812_gitlab/data/backups
+
+gitlab-rake gitlab:backup:restore BACKUP=1528947455_2018_06_14_10.0.4
+
+
+
+
+
+  
+最后再次启动Gitlab
+[root@code-server backups]# gitlab-ctl start
+[root@code-server backups]# gitlab-ctl status
+
+
+ 
+恢复命令完成后，可以check检查一下恢复情况
+
+[root@code-server backups]# gitlab-rake gitlab:check SANITIZE=true

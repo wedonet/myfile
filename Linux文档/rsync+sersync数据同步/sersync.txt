@@ -15,6 +15,10 @@
 
 sersync2 -r -d -o /usr/local/sersync/confxml.xml
 
+sersync2 -r -d -o /usr/local/sersync/confxml_web1.xml
+
+sersync2 -r -d -o /usr/local/sersync/confxml_web2.xml
+
 #¿ª»úÆô¶¯
 
 

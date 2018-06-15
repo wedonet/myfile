@@ -1,0 +1,11 @@
+1. intel_rapl: no valid rapl domains found in package 0
+
+sudo vim /etc/modprobe.d/blacklist.conf
+
+最后添加
+
+blacklist intel_rapl
+
+然后 save and reboot
+
+注： blacklist.conf 有可能是别的名子，后面一样。

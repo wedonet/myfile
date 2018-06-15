@@ -1,0 +1,11 @@
+# 查看的服务端口是否已开启
+
+firewall-cmd --zone=external --add-masquerade
+
+
+firewall-cmd --zone=public --add-forward-port=port=10007:proto=tcp:toport=100:toaddr=172.16.32.59 --permanent
+
+
+查看已有的端口转发
+
+firewall-cmd --zone=public --list-al

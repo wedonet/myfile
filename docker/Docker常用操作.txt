@@ -162,3 +162,16 @@ firewall-cmd --zone=public --add-port=80/tcp --permanent
 ========================================================
 mysqldump -h 地址 -P 端口 -u user_name -p 123456 database_name > outfile_name.sql
 source outfile_name.sql
+
+
+
+
+=======================================================
+实时查看docker容器日志
+
+$ sudo docker logs -f -t --tail 行数 容器名
+
+
+例：实时查看docker容器名为s12的最后10行日志
+
+$ sudo docker logs -f -t --tail 10 s12

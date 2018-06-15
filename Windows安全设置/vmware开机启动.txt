@@ -1,0 +1,12 @@
+1. 新建快捷方式：
+
+D:\program\vmware\vmware.exe -x "E:\centos\Rsync1\CentOS 64 Safe_Ins.vmx" "E:\centos\Rsync2\Rsync2_192.168.198.102.vmx"
+
+
+2。 复制到 C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup
+
+
+
+ex:
+
+"E:\vmware\VMware Workstation\vmware.exe" -x "E:\centos\php_72_Wy\CentOS 64 Safe_Ins.vmx" "E:\DockerMain\CentOS 64 _Docker_172.16.32.59.vmx"
