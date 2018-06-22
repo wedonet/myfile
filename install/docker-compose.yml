@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+
+   nginx:
+      image: nginx:1.13 #镜像名称和版本
+      ports:
+         - "811:80"
+      restart: always
+      volumes:
+         - ./web/public:/usr/share/nginx/html
+         - ./nginx/logs:/var/log/nginx
+         - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+         - ./nginx/conf.d:/etc/nginx/conf.d
+         - /etc/localtime:/etc/localtime
+      networks:
+         - my-net
+
+   php:
+      image: 172.16.32.55:5000/centos_php_7.13:latest
+      ports:
+         - "9011:9000"
+      restart: always
+      volumes:
+         - ./web:/var/www
+         - ./php/etc:/usr/local/php7_1_3/etc
+         - ./php/logs:/var/phplogs
+         - /etc/localtime:/etc/localtime
+      privileged: true
+      networks:
+         - my-net
+
+   mysql:
+      image: mysql:5.7.17
+      ports:
+         - 4011:3306
+      restart: always
+      volumes:
+         - ./mysql/conf:/etc/mysql/conf.d
+         - ./mysql/data:/var/lib/mysql
+         - /etc/localtime:/etc/localtime
+      environment:
+         MYSQL_ROOT_PASSWORD: 9c69d475-5c21-3682-2601-aadc2f59c07e
+      networks:
+         - my-net
+
+networks:
+   my-net:
+     external:
+       name: my-net

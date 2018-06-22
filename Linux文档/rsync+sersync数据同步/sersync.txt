@@ -13,11 +13,11 @@
 /usr/local/sersync/sersync2 -r -d -o /usr/local/sersync/confxml.xml
 
 
-sersync2 -r -d -o /usr/local/sersync/confxml.xml
+sersync2 -d -o /usr/local/sersync/confxml.xml
 
-sersync2 -r -d -o /usr/local/sersync/confxml_web1.xml
+sersync2 -d -o /usr/local/sersync/confxml_web1.xml
 
-sersync2 -r -d -o /usr/local/sersync/confxml_web2.xml
+sersync2 -d -o /usr/local/sersync/confxml_web2.xml
 
 #开机启动
 
@@ -38,6 +38,7 @@ echo "export PATH=$PATH:/usr/local/sersync/bin/" >> /etc/profile
 
 killall /usr/local/sersync/sersync2 && /usr/local/sersync/sersync2 -r -d -o /usr/local/sersync/confxml.xml
 
+killall sersync2 && /usr/local/sersync/sersync2 -r -d -o /usr/local/sersync/confxml.xml
 
 #修改可监控的最大目录数量：
 
@@ -53,4 +54,16 @@ CMS服务器的sersync开机启动服务：默认启动
 
 查看状态
 
-ps aux | grep rersync
+ps aux | grep sersync
+
+
+
+自动备份开始后，先进行一次手动备份
+
+rsync  -avz  --password-file=/root/passwd --exclude-from=/usr/local/sersync/exclude_workspace.list /usr/local/workspace/  repl@192.168.198.102::workspace
+
+
+
+刷新rc.local设置
+
+source /etc/profile 

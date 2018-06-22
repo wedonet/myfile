@@ -1,0 +1,13 @@
+
+
+    不过这个又带来了另一个问题 agetty CPU占用率100% 参考:http://blog.chinaunix.net/uid-26212859-id-5759744.html
+    原因就是 "docker run"运行容器时使用了 "/sbin/init"和"--privileged"参数
+    使用/sbin/init启动容器并加上--privileged参数，相当于docker容器获得了宿主机的全权委托权限。这时docker容器内部的init与宿主机的init产生了混淆。
+    出于对安全的考虑，在启动容器时，docker容器里的系统只具有一些普通的linux权限，并不具有真正root用户的所有权限。而--privileged=true参数可以让docker容器具有linux root用户的所有权限。
+    为了解决这个问题，docker后来的版本中docker run增加了两个选项参数"--cap-add"和"--cap-drop"。
+
+--cap-add : 获取default之外的linux的权限
+--cap-drop: 放弃default linux权限
+所以，在运行容器时，可以不用--privileged参数的尽量不用，用--cap-add参数替代。如果必须使用--privileged=true参数的，可以通过在宿主机和容器中执行以下命令将agetty关闭。
+shell> systemctl stop getty@tty1.service
+shell> systemctl mask getty@tty1.service
