@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<head version="2.5">
+    <host hostip="localhost" port="8008"></host>
+    <debug start="false"/>
+    <fileSystem xfs="false"/>
+    <filter start="false">
+        <exclude expression="^aa/*"></exclude>
+    </filter>
+    <inotify>
+        <delete start="true"/>
+        <createFolder start="true"/>
+        <createFile start="false"/>
+        <closeWrite start="true"/>
+        <moveFrom start="true"/>
+        <moveTo start="true"/>
+        <attrib start="true"/>
+        <modify start="false"/>
+    </inotify>
+
+    <sersync>
+        <localpath watch="/usr/local/workspace/812_gitlab/data/backups/">
+            <remote ip="172.16.32.33" name="gitlab"/>
+         </localpath>
+        <rsync>
+            <commonParams params="-artuz"/>
+            <auth start="true" users="repl" passwordfile="/root/passwd"/>
+            <userDefinedPort start="false" port="873"/><!-- port=874 -->
+            <timeout start="false" time="100"/><!-- timeout=100 -->
+            <ssh start="false"/>
+        </rsync>
+        <failLog path="/tmp/rsync_fail_log_gitlab.sh" timeToExecute="60"/><!--default every 60mins execute once-->
+        <crontab start="true" schedule="600"><!--600mins-->
+            <crontabfilter start="false">
+                <exclude expression="*.tar.gz"></exclude>
+            </crontabfilter>
+        </crontab>
+        <plugin start="false" name="command"/>
+    </sersync>
+
+
+
+</head>
