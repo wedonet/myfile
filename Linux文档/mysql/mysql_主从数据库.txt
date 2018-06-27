@@ -15,11 +15,11 @@ https://blog.csdn.net/github_26672553/article/details/52032964
 
 mysql -h 172.16.32.59 -P 4014  -u root -p 
 
-create user 'repl'@'192.168.101.13' identified by 'Abc_123456'; 
+create user 'repl'@'172.16.32.%' identified by 'Abc_123456'; 
 
 mysql>set global validate_password_policy=0;#修改mysql密码级别(可以设置8位以上的任意代码)
 
-mysql>grant all on *.* to repl@"%" identified by "Abc_123456" 
+mysql>grant all on *.* to repl@"172.16.32.%" identified by "Abc_123456" 
 
 
 
@@ -80,9 +80,9 @@ mysql>unlock tables;
 
 
 
-备份
+备份操作
 
-mysqldump -u root -p test -lF >/tmp/db.test.20160725.sql
+
 
 
 
@@ -120,6 +120,10 @@ vi /etc/my.cnf
 log-bin=mysql-bin
 server-id=2 #我们的主服务器是1
 
+
+查看server-id
+
+show variables like 'server_id'; 
 
 
 4.重启msyql

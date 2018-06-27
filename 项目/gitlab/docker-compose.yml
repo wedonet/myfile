@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+   gitlab:
+      image: gitlab/gitlab-ce:10.0.4-ce.0
+      ports:
+         - "412:443"
+         - "812:80"
+         - "100:22"
+      restart: always
+      volumes:
+         - ./config:/etc/gitlab
+         - ./logs:/var/log/gitlab
+         - ./data:/var/opt/gitlab
+         - /etc/localtime:/etc/localtime
+      networks:
+         - my-net
+networks:
+   my-net:
+     external:
+       name: my-net
