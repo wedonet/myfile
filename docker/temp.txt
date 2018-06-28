@@ -1,0 +1,35 @@
+centos_php_7.13
+
+curl --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+  -I \
+  -X HEAD http://172.16.32.59:5000/v2/centos_php_7.13/manifests/latest
+
+
+curl -X DELETE http://172.16.32.59:5000/v2/centos_php_7.13/manifests/sha256:9915557b5617fd5a5cd03d1f582f295b5c0358c609c793fba9f0e94c83905a16
+
+
+查看tags
+
+curl 172.16.32.59:5000/v2/centos_php_7.13/tags/list
+
+
+现在进入registry中进行垃圾回收
+	
+[root@docker1 ~]# docker exec -it <容器ID|容器名称> /bin/sh
+/ # cd /var/lib/registry/
+/var/lib/registry # du -sch
+10.3M    .
+10.3M    total
+/var/lib/registry # registry garbage-collect /etc/docker/registry/config.yml
+/var/lib/registry # du -sch
+28.0K    .
+28.0K    total
+
+
+
+curl --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+  -I \
+  -X HEAD http://172.16.32.59:5000/v2/centos_php_7.13/manifests
+
+
+curl 172.16.32.55:5000/v2/_catalog

@@ -82,3 +82,9 @@ Ubuntu 16.04+, Debian 8+, centos 7
     "192.168.199.100:5000"
   ]
 }
+
+
+
+删除镜像
+
+/usr/local/workspace/813_registry/data/registry/docker/registry/v2/repositories
