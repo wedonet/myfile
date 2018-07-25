@@ -59,6 +59,7 @@ rsync  -avz  --password-file=/root/passwd --exclude-from=/usr/local/sersync/excl
 
 
 
+
 # ∏Ω À¢–¬rc.local…Ë÷√
 
 source /etc/profile 
@@ -66,3 +67,8 @@ source /etc/profile
 
 
 rsync  -avz  --password-file=/root/passwd  /usr/local/workspace/812_gitlab/data/backups/  repl@172.16.32.33::gitlab
+
+
+
+
+rsync  -avz  --password-file=/root/passwd  /usr/local/nginx/html/1626_wy_laravel55/  repl@172.16.32.33::waiguoyudaxue

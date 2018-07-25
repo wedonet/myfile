@@ -1,0 +1,23 @@
+
+
+yum -y install rsync
+
+2. 安装Lsyncd
+
+　　1. 安装lsyncd依赖包
+
+yum install lua lua-devel pkgconfig gcc asciidoc
+
+　　2. 安装lsyncd rpm资源，并安装lsyncd
+
+#rpm -iUvh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
+
+wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
+
+
+yum install lsyncd
+
+
+3. 配置
+
+	/etc/lsyncd.conf

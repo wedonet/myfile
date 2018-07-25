@@ -8,6 +8,15 @@ tmpfs　　　　　　　　　　　　　　　1.9G　100K　1.9G　　1%　/dev/shm
 /dev/mapper/VolGroup-lv_home　　299G　984M　283G　　1%　/home目标：将VolGroup-lv_home缩小到20G，并将剩余的空间添加给VolGroup-lv_root
 
 
+
+
+lsblk 查看的是block device,也就是逻辑磁盘大小。
+
+df查看的是file system, 也就是文件系统层的磁盘大小。
+
+
+
+
 2. 查看目录剩余空间
 
 
@@ -54,3 +63,19 @@ vi /etc/fstab
 附 添加进存储池
 
 $ sudo ssm add -p <pool-name> <device>
+
+
+
+解决umount: /home: device is busy
+
+# fuser -m /home
+    
+ /home: 10278c 10279c 10280c 10281c 10282c 10295 10365 18222c
+    
+
+$ kill -9 pid
+
+
+如果没有fuser,可以用如下指令安装
+
+yum install psmisc 

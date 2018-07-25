@@ -1,0 +1,16 @@
+1. 进入 /usr/local/worksapce
+
+2. 在workspace下建项目文件夹，比如 801_FarmingMachine
+
+3. 进入 801_FarmingMachine，克隆项目配置文件。
+
+git clone ssh://git@gitlab.1suyuan.com:10007/develop/docker_project.git /usr/local/workspace/801_FarmingMachine
+
+4. 编辑docker-compose.yml
+
+  修改nginx,php的映射端口为实际端口，（最好nginx和php相对应）将8080修改为8001，9080修改为9001
+
+
+5. 给项目文件夹777权限
+
+6. 运行 docker-compose up -d 

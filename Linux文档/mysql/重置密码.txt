@@ -1,0 +1,17 @@
+配置文件/etc/my.cnf添加配置，重启mysql
+
+##无密码登录
+skip-grant-tables;
+1
+2
+客户端连接mysql选择mysql库
+
+mysql -uroot -p
+1
+修改root密码5.7版本，5.7版本之后已经没有了password字段，而是用authentication_string加密字段代替
+
+update mysql.user set authentication_string=password('Zahd_123456') where user='root';
+1
+5.7版本以前
+
+update mysql.user set password=password('Zahd_123456') where user='root';

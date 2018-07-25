@@ -1,0 +1,23 @@
+今天在docker中的debian系统中执行apt-get update的时候，看到一些无法连接http://deb.debian.org源的错误，如下
+
+$ apt-get update
+
+W: Failed to fetch http://deb.debian.org/debian/dists/jessie/InRelease
+W: Failed to fetch http://deb.debian.org/debian/dists/jessie-updates/InRelease
+W: Failed to fetch http://deb.debian.org/debian/dists/jessie/Release.gpg  Temporary failure resolving 'cdn-fastly.deb.debian.org'
+W: Failed to fetch http://deb.debian.org/debian/dists/jessie-updates/Release.gpg  Temporary failure resolving 'cdn-fastly.deb.debian.org'
+W: Some index files failed to download. They have been ignored, or old ones used instead.
+
+
+
+既然国外的镜像源连接不上，那么就用国内的阿里云的镜像源吧。
+
+$ vi /etc/apt/sources.list
+
+替换成
+deb http://mirrors.aliyun.com/debian wheezy main contrib non-free
+deb-src http://mirrors.aliyun.com/debian wheezy main contrib non-free
+deb http://mirrors.aliyun.com/debian wheezy-updates main contrib non-free
+deb-src http://mirrors.aliyun.com/debian wheezy-updates main contrib non-free
+deb http://mirrors.aliyun.com/debian-security wheezy/updates main contrib non-free
+deb-src http://mirrors.aliyun.com/debian-security wheezy/updates main contrib non-free

@@ -148,7 +148,7 @@ mysql>show slave status\G;
 
 正常
 
-Slave_IO_Running: Connecting
+Slave_IO_Running: Yes
 Slave_SQL_Running: Yes
 
 
@@ -173,3 +173,6 @@ mysql -h 172.16.32.55 -P 4002  -u root -p  < master.sql
 
 
 将 /etc/my.cnf 权限修改成 644，然后启动 MySQL 即可
+
+
+注： mysql.cnf需要权限 644

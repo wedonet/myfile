@@ -1,0 +1,52 @@
+1. 调试好备用服务器
+
+	静态和http正常访问。
+
+2. 推送代码
+
+rsync -avz --progress \
+/usr/local/nginx/html/831_suyuan_2/ \
+-e "ssh -p 12768" \
+wedonet@172.16.32.59:/usr/local/workspace/816_1suyuan/web/
+
+
+拉取代码
+
+rsync -avz --progress \
+-e "ssh -p 12768" \
+wedonet@172.16.32.36:/usr/local/nginx/html/831_suyuan_2/ \
+/usr/local/workspace/816_1suyuan/web/
+
+
+验证推送大小
+
+du 目录名  
+
+验证文件个数
+
+$ ls -lR| grep "^-" | wc -l
+
+
+3. 访问验证
+
+
+4. 修改Nginx转发
+
+
+
+5. 转移数据库
+
+$ cd /var/tmp
+
+$ mysqldump -h 172.16.32.37 -P 3306 -u zashop -p 831_suyuan > 831_suyuan.sql
+
+72wBaPWIyv3Ndh9rnS
+
+$ mysql -h 127.0.0.1 -P 3306 -u root -p
+
+$ source .sql
+
+6. 修改.env
+
+7. 原文件夹改为 加 _bak停止使用
+

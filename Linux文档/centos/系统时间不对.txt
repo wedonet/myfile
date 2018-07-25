@@ -1,0 +1,34 @@
+centos系统有时候时间是不同步的，但是只要我们是在国内下载，一般时区是亚洲/上海的，所以我们只要做这一步就行了
+
+1.使用yum 安装ntpdate
+
+
+yum install -y ntpdate
+
+2.然后ntpdate us.pool.ntp.org
+
+再date一下
+
+
+时间就同步了
+
+
+如果你的时区不是上海的，那么就复制过去吧
+
+cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+然后进行12步
+
+
+
+1.  安装ntpdate工具
+
+# yum -y install ntp ntpdate
+
+2.  设置系统时间与网络时间同步
+
+# ntpdate cn.pool.ntp.org
+
+3.  将系统时间写入硬件时间
+
+# hwclock --systohc
