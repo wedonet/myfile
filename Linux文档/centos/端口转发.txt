@@ -9,3 +9,9 @@ firewall-cmd --zone=public --add-forward-port=port=10007:proto=tcp:toport=100:to
 查看已有的端口转发
 
 firewall-cmd --zone=public --list-al
+
+
+
+#用IPtable做端口转发
+
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination :8080
