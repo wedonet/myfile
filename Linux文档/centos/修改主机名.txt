@@ -6,3 +6,9 @@ $ sudo nano /etc/hostname
 $ sudo nano /etc/hosts
 最后重启机器：
 $ reboot 
+
+
+# centos7修改主机名，重启也生效
+
+
+hostnamectl set-hostname centos77.magedu.com  

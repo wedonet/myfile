@@ -1,4 +1,4 @@
- CentOS 7 源码编译安装MySQL 5.7.14
+﻿ CentOS 7 源码编译安装MySQL 5.7.14
 
 
 准备工作
@@ -482,3 +482,16 @@ mysql>source /home/abc/abc.sql;
 方法二：
 mysql -u用户名 -p密码 数据库名 < 数据库名.sql
 #mysql -uabc_f -p abc < abc.sql
+
+
+
+
+
+
+
+
+#要解决这个，一般的会报错
+update gethistory set content='\xB4\xED\xCE\xF3 ' where id=1438;
+
+
+

@@ -1,0 +1,44 @@
+修改maven配置文件：F:\maven\apache-maven-3.3.9\conf\settings.xml
+
+增加如下配置即可：
+
+     <profile>     
+      <id>JDK-1.8</id>       
+      <activation>       
+        <activeByDefault>true</activeByDefault>       
+        <jdk>1.8</jdk>       
+      </activation>       
+      <properties>       
+        <maven.compiler.source>1.8</maven.compiler.source>       
+        <maven.compiler.target>1.8</maven.compiler.target>       
+        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>       
+      </properties>       
+    </profile> 
+
+
+#参考 
+
+https://www.cnblogs.com/Hxinguan/p/6132446.html
+
+
+
+# 修改pop.xml 
+
+加上
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+
+
+
+# web.xml调整成3.1
+

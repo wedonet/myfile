@@ -34,3 +34,14 @@ git commit -m 'x'
 git config --global core.fileMode false
 
 git config --unset --global core.fileMode false
+
+
+
+
+
+
+
+
+
+
+git config --global http.postBuffer 524288000
