@@ -15,11 +15,11 @@ https://blog.csdn.net/github_26672553/article/details/52032964
 
 mysql -h 172.16.32.59 -P 4014  -u root -p 
 
-create user 'repl'@'192.168.101.13' identified by 'Abc_123456'; 
+create user 'repl'@'172.16.32.%' identified by 'Abc_123456'; 
 
 mysql>set global validate_password_policy=0;#修改mysql密码级别(可以设置8位以上的任意代码)
 
-mysql>grant all on *.* to repl@"%" identified by "Abc_123456" 
+mysql>grant all on *.* to repl@"172.16.32.%" identified by "Abc_123456" 
 
 
 
@@ -33,6 +33,11 @@ repl        登录用户名
 "%"         从哪台服务器登录，可以是IP地址
 "Abc_123456"  密码
 
+
+
+#验证一下添加用户是否成功
+
+select user,host,Create_user_priv,Super_priv from mysql.user
 
 
 开启binlog，记录所有的数据库变化操作（数据增删改，创建表等）
@@ -75,9 +80,9 @@ mysql>unlock tables;
 
 
 
-备份
+备份操作
 
-mysqldump -u root -p test -lF >/tmp/db.test.20160725.sql
+
 
 
 
@@ -116,6 +121,10 @@ log-bin=mysql-bin
 server-id=2 #我们的主服务器是1
 
 
+查看server-id
+
+show variables like 'server_id'; 
+
 
 4.重启msyql
 
@@ -131,7 +140,7 @@ mysql>stop slave;
 
 
 
-如何判断是否连上主服务器？
+如何判断是否连上主服务器？i
 
 mysql>show slave status\G;
 
@@ -139,7 +148,7 @@ mysql>show slave status\G;
 
 正常
 
-Slave_IO_Running: Connecting
+Slave_IO_Running: Yes
 Slave_SQL_Running: Yes
 
 
@@ -160,3 +169,10 @@ mysqldump -u root -p -h 172.16.32.55 -P 4001 --all-databases > master.sql
 
 导入数据库
 mysql -h 172.16.32.55 -P 4002  -u root -p  < master.sql
+
+
+
+将 /etc/my.cnf 权限修改成 644，然后启动 MySQL 即可
+
+
+注： mysql.cnf需要权限 644

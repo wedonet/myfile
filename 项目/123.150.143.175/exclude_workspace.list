@@ -1,0 +1,5 @@
+*.log
+812_gitlab
+storage/framework/views/*
+mysql/data
+

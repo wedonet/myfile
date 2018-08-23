@@ -1,0 +1,19 @@
+恭喜您，OneinStack 安装成功！
+OneinStack Linux+Nginx/Tengine+MySQL/MariaDB/Percona+PHP
++Pureftpd+phpMyAdmin+redis+memcached+jemalloc脚本中用到的软件包大多最新稳定版本,修复了一些安全性问题。
+
+查看本地环境:  探针 phpinfo Opcache phpMyAdmin(为了更安全，建议重命名 phpMyAdmin 目录！)
+
+创建 WEB 虚拟主机执行脚本:  ./vhost.sh
+
+创建 FTP 虚拟账号执行脚本:  ./pureftpd_vhost.sh
+
+Github 项目地址:  https://github.com/lj2007331/oneinstack
+
+OneinStack 官网:  https://oneinstack.com
+
+QQ 群:  558540514(付费千人群) 262601796(新)
+
+赞助我们:    
+
+          Paypal:  lj2007331@gmail.com   支付宝:  lj2007331@gmail.com

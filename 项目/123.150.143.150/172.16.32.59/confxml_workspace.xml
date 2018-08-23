@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<head version="2.5">
+    <host hostip="localhost" port="8008"></host>
+    <debug start="false"/>
+    <fileSystem xfs="false"/>
+    <filter start="true">
+		<exclude expression="(.*)\.log"></exclude>
+		<exclude expression="^812_gitlab/*"></exclude>
+		<exclude expression="(.*)storage/framework/views/"></exclude>
+		<exclude expression="(.*)mysql/data/"></exclude>
+    </filter>
+    <inotify>
+        <delete start="true"/>
+        <createFolder start="true"/>
+        <createFile start="false"/>
+        <closeWrite start="true"/>
+        <moveFrom start="true"/>
+        <moveTo start="true"/>
+        <attrib start="true"/>
+        <modify start="false"/>
+    </inotify>
+
+    <sersync>
+        <localpath watch="/usr/local/workspace">
+            <remote ip="172.16.32.33" name="workspace_server1"/>
+        </localpath>
+
+        <rsync>
+            <commonParams params="-artuz"/>
+            <auth start="true" users="repl" passwordfile="/root/passwd"/>
+            <userDefinedPort start="false" port="873"/><!-- port=874 -->
+            <timeout start="false" time="3"/><!-- timeout=100 -->
+            <ssh start="false"/>
+        </rsync>
+        <failLog path="/tmp/rsync_fail_web1_log.sh" timeToExecute="60"/><!--default every 60mins execute once-->
+        <crontab start="true" schedule="600"><!--600mins-->
+            <crontabfilter start="true">
+				<exclude expression="*.log"></exclude>
+				<exclude expression="812_gitlab"></exclude>
+				<exclude expression="storage/framework/views/*"></exclude>
+				<exclude expression="mysql/data/"></exclude>
+            </crontabfilter>
+        </crontab>
+        <plugin start="false" name="command"/>
+    </sersync>
+</head>

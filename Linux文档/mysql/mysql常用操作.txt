@@ -189,3 +189,11 @@
 =================
 # 查看所有用户
 select user,host,Create_user_priv,Super_priv from mysql.user
+
+
+
+#删除用户
+
+>drop user 用户名@'%';
+
+>drop user 用户名@ localhost; 

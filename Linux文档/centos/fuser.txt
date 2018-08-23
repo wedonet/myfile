@@ -1,0 +1,20 @@
+$ sudo fuser -m -v /media/matlab/
+                       用户     进程号    权限   命令
+/media/matlab/:        galeki      335    ..c..  gqview
+$ sudo umount /media/matlab
+
+# -m 参数显示所有使用指定文件系统的进程，后面可以跟挂载点，或是dev设备
+# -v 参数给出详细的输出，可以看出，原来是 gqview 这个程序还在霸占着移动设备
+# fuser 还给出了程序的进程号，知道了进程号，你就可以随便怎么处置这个程序了
+
+----------------------------------------------------------------------
+# 另外你也可以添加一个 -k 参数：
+$ sudo fuser -m -k /media/matlab/         # 这招自动把霸占着 /media/matlab/ 的程序杀死
+$ sudo umount /media/matlab
+
+# 如果你不是很明确是否要杀死所有霸占设备的程序，你还可以加一个 -i 参数，这样每杀死一个程序前，都会询问：
+$ sudo fuser -m -v -i -k /media/matlab/
+                          用户     进程号      权限   命令
+/media/matlab/:         galeki      371     ..c..   gqview
+杀死进程 371 ? (y/N)
+$ sudo umount /media/matlab

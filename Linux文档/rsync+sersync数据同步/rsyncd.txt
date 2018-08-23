@@ -1,0 +1,82 @@
+centos7安装配置rsync 
+一、	服务端（192.168.8.81）：
+检查是否安装rsync
+
+rpm -qa rsync
+
+1.	安装软件： 
+
+yum  -y  install  rsync
+
+2.	创建需同步的目录： 
+
+mkdir  -p  /home/lee/rsync
+
+3.	更改所属主、组： 
+
+chown  -R  nobody:nobody  /home/lee/rsync/
+
+4. 编辑配置文件：vim /etc/rsyncd.conf 
+
+motd file = /etc/rsyncd.motd
+transfer logging = yes
+log file = /var/log/rsyncd.log
+port = 873
+address = 192.168.8.81
+uid = nobody
+gid = nobody
+use chroot = no
+read only = no
+max connections = 10
+[common]
+comment = rsync lee
+path = /home/lee/rsync/
+ignore errors
+auth users = lee
+secrets file = /etc/rsyncd.secrets
+hosts allow = 192.168.8.0/255.255.255.0
+hosts deny = *
+list = false
+
+5. 创建用户密码
+
+echo  "repl:123456"  >  /etc/rsyncd.secrets
+chmod  600  /etc/rsyncd.secrets
+
+6. 创建提示信息文件
+
+echo  "rsync  lee"  >  /etc/rsyncd.motd
+
+7.	配置防火墙规则： 
+
+firewall-cmd --zone=public --add-port=873/tcp --permanent启动服务： 
+
+8. 打开selinux 对 rsync的限制
+
+setsebool -P rsync_full_access on
+
+
+9. 测试拉取： 
+
+rsync  -avz  --password-file=/root/passwd  repl@192.168.8.81::common  /home/lee/rsync/
+ 
+10. 推送： 
+
+rsync  -avz  --password-file=/root/passwd  /home/lee/rsync/  repl@192.168.198.102::common
+ 
+
+
+
+
+
+附： 推送到远端
+
+rsync -avz --progress  /usr/local/nginx/html/xinlianyun/ -e "ssh -p 12768" wedonet@172.16.32.33:/usr/local/backup/workspace_serve1/xinlianyun/
+
+
+eg:
+
+rsync -avz --progress  \
+/usr/local/nginx/html/FarmingMachine/ \
+-e "ssh -p 22"  \
+wedonet@172.16.32.34:/usr/local/workspace/801_farmingmachine/web

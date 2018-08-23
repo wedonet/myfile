@@ -10,3 +10,15 @@ D:\program\vmware\vmware.exe -x "E:\centos\Rsync1\CentOS 64 Safe_Ins.vmx" "E:\ce
 ex:
 
 "E:\vmware\VMware Workstation\vmware.exe" -x "E:\centos\php_72_Wy\CentOS 64 Safe_Ins.vmx" "E:\DockerMain\CentOS 64 _Docker_172.16.32.59.vmx"
+
+
+
+
+
+D:\program\vmware\vmware.exe -x "E:\centos\Rsync1\CentOS 64 Safe_Ins.vmx" "E:\centos\Rsync2\Rsync2_192.168.198.102.vmx"
+
+
+
+"E:\vmware\VMware Workstation\vmware.exe" -x "E:\centos\php_72_Wy\CentOS 64 Safe_Ins.vmx" "E:\DockerMain\CentOS 64 _Docker_172.16.32.59.vmx" "E:\centos\Centos_nginx_lb\CentOS 64_Nginx_lb.vmx"
+
+"E:\vmware\VMware Workstation\vmware.exe" -x "E:\centos\php_72_Wy\CentOS 64 Safe_Ins.vmx" "E:\DockerMain\CentOS 64 _Docker_172.16.32.59.vmx" "E:\centos\Centos_nginx_lb\CentOS 64_Nginx_lb.vmx"

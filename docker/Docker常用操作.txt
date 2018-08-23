@@ -175,3 +175,31 @@ $ sudo docker logs -f -t --tail 行数 容器名
 例：实时查看docker容器名为s12的最后10行日志
 
 $ sudo docker logs -f -t --tail 10 s12
+
+========================================================
+导入导出镜像
+
+1. 查看镜像id
+
+sudo docker images
+
+REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
+quay.io/calico/node      v1.0.1              c70511a49fa1        6 weeks ago         257 MB
+hello-world              latest              48b5124b2768        2 months ago        1.84 kB
+quay.io/coreos/flannel   v0.7.0              63cee19df39c        2 months ago        73.8 MB
+quay.io/calico/cni       v1.5.5              ada87b3276f3        2 months ago        67.1 MB
+
+ 
+
+2. 选择要打包的镜像，执行打包命令
+
+sudo docker save -o quay.io-calico-node-1.tar quay.io/calico/node 
+
+会在当前目录下生成导出文件xxx.tar，然后将此文件下载到本地
+
+ 
+
+3. 在开发环境导入上述打包的镜像
+
+docker load -i quay.io-calico-node-1.tar
+

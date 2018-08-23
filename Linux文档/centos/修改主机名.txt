@@ -1,0 +1,14 @@
+2、永久修改主机名：
+修改hostname文件（路径：/etc/hostname）：
+$ sudo nano /etc/hostname
+把hostname文件里面所有原来的名称改成你想改成的名称。
+主机名同时也保存在/etc/hosts文件中，需要把当前IP地址对应的主机名修改为hostname文件中的名称。
+$ sudo nano /etc/hosts
+最后重启机器：
+$ reboot 
+
+
+# centos7修改主机名，重启也生效
+
+
+hostnamectl set-hostname centos77.magedu.com  

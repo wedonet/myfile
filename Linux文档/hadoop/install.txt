@@ -1,7 +1,26 @@
-下载地址：
+﻿#下载地址：
 
 http://mirror.bit.edu.cn/apache/hadoop/common/hadoop-2.8.4/hadoop-2.8.4.tar.gz
 
 
+#
+设置Hadoop
 
-1527728400 + 86400
+可以通过附加下面的命令到 ~/.bashrc 文件中设置 Hadoop 环境变量。
+
+/usr/local/hadoop/hadoop-2.8.4
+
+
+export HADOOP_HOME=/usr/local/hadoop/hadoop-2.8.4
+
+export PATH = $HADOOP_HOME/bin:$PATH
+
+#验证
+
+hadoop version
+
+
+
+# 史上最详细的Hadoop环境搭建
+
+https://blog.csdn.net/hliq5399/article/details/78193113

@@ -1,0 +1,4 @@
+1. 检查备份机rsync工作情况
+
+systemctl status rsyncd
+
