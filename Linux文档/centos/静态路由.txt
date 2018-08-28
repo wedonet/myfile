@@ -1,0 +1,116 @@
+route add 192.168.1.0 mask 255.255.255.0 192.168.0.2 -p
+
+#查看路由
+
+
+ip route show 
+
+太难看了，格式化一下（显示的是默认网关和局域网路由，两行的内容没有共通性）：
+
+ip route show|column -t 
+
+
+#添加临时路由
+
+ip route add 10.15.150.0/24 via 192.168.150.253 dev enp0s3
+
+
+#删除临时路由
+
+ip route del 10.15.150.0/24
+
+# 添加永久路由   /etc/sysconfig/network-scripts/route-interface
+
+172.22.2.0/24 via 172.22.3.254 dev eno16777984
+
+172.21.0.0/16 via 172.22.3.254 dev eno16777984
+
+
+#永久路由
+
+永久静态路由需要写到 /etc/sysconfig/network-scripts/route-interface 文件中，比如添加两条静态路由：
+
+[root@centos7 ~]# vi /etc/sysconfig/network-scripts/route-enp0s3
+10.15.150.0/24 via 192.168.150.253 dev enp0s3
+10.25.250.0/24 via 192.168.150.253 dev enp0s3
+
+
+
+
+
+
+
+
+修改 /etc/sysconfig/network-scripts/route-ens33
+
+
+其中 ens33 应该是当前服务器的网卡名称
+vim 修改一下。这里要注意一下格式
+
+(1) TARGET via GW
+例如：
+
+192.168.0.0/24 via 172.16.0.1
+0.0.0.0/0 via 172.16.10.2 dev eth0 （可以省略dev eth0 ，注意这里的掩码是0而不是32，因为这里是网段而不是路由）
+
+
+
+(2) 每三行定义一条路由
+
+     ADDRESS#=TARGET   #表示数字
+     NETMASK#=mask
+     GATEWAY#=GW
+
+    1
+    2
+    3
+
+例如：ADDRESS0=192.16.20.0
+     NETMASK0=255.255.255.0
+     GATEWAY0=172.16.0.1
+
+
+
+     参考
+
+
+一：使用 route 命令添加
+使用route 命令添加的路由，机器重启或者网卡重启后路由就失效了，方法：
+//添加到主机的路由
+# route add –host 192.168.1.11 dev eth0
+# route add –host 192.168.1.12 gw 192.168.1.1
+//添加到网络的路由
+# route add –net 192.168.1.11 netmask 255.255.255.0 eth0
+# route add –net 192.168.1.11 netmask 255.255.255.0 gw 192.168.1.1
+# route add –net 192.168.1.0/24 eth1
+//添加默认网关
+# route add default gw 192.168.2.1
+//删除路由
+# route del –host 192.168.1.11 dev eth0
+
+
+二：在 linux下设置永久路由的方法：
+1.在/etc/rc.local里添加
+方法：
+route add -net 192.168.3.0/24 dev eth0
+route add -net 192.168.2.0/24 gw 192.168.2.254
+
+2.在/etc/sysconfig/network里添加到末尾
+方法：GATEWAY=gw-ip 或者 GATEWAY=gw-dev
+
+3./etc/sysconfig/static-routes :
+any net 192.168.3.0/24 gw 192.168.3.254
+any net 10.250.228.128 netmask 255.255.255.192 gw 10.250.228.129
+
+如果在rc.local中添加路由会造成NFS无法自动挂载问题，所以使用static-routes的方法是最好的。无论重启系统和service network restart 都会生效
+
+
+
+
+
+default via 123.150.143.129 dev eno1 proto static metric 100 
+default via 172.16.32.1 dev eno2 proto static metric 101 
+123.150.143.128/26 dev eno1 proto kernel scope link src 123.150.143.171 metric 100 
+172.16.32.0/26 dev eno2 proto kernel scope link src 172.16.32.32 metric 101 
+172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 
+172.18.0.0/16 dev br-b07ce5e49137 proto kernel scope link src 172.18.0.1 
