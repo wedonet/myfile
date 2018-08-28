@@ -20,3 +20,15 @@ php artisan config:clear
 
 
 composer dump-autoload
+
+
+# seeder does not exit 
+
+composer dump-autoload
+
+
+# cookie
+
+Cookie::queue('doctor', json_encode($u), 10);
+
+Cookie::queue(Cookie::forget('doctor'));
