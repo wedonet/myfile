@@ -1,3 +1,9 @@
+简介：
+
+使用 vrrp 协议。
+
+
+
 程序环境：
 
             主配置文件：/etc/keepalived/keepalived.conf

@@ -1,0 +1,27 @@
+试验对象
+
+192.168.240.101 server1  192.168.240.111
+192.168.240.102 server2  192.168.240.111
+192.168.240.103 备份
+
+
+# 安装Docker环境
+
+
+# 建立web1
+
+
+# 安装配置deepalived，虚拟IP
+
+# web双向同步
+
+# mysql 双主
+
+# mysql 自动备份
+
+# keepalived监测http
+
+# keepalived监测mysql
+
+
+Done
