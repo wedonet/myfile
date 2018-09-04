@@ -1,0 +1,13 @@
+# 查看系统字符集
+
+locale
+
+/etc/locale.conf
+
+
+
+LANG="zh_CN.UTF-8"
+
+
+
+en_US.utf8
