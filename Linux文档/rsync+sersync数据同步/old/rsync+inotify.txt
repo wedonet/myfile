@@ -1,0 +1,96 @@
+小型分布式存储 自动同步文件
+
+
+*检查是否安装
+rpm -qa|grep rsync
+
+
+*安装： yum -y install rsync
+
+启动： systemctl start rsyncd
+
+systemctl enable rsyncd
+
+*配置：编辑 /etc/rsyncd.conf （注意要编辑文件的名称）
+vi /etc/rsyncd.conf
+
+
+*开机启动
+systemctl enable rsyncd
+
+
+*重启rsync
+/usr/bin/rsync –daemon –config=/etc/rsyncd.conf
+
+
+*查看进程： ps -ef|grep rsync 
+
+
+
+*参考： 
+
+http://blog.sina.com.cn/s/blog_7c5f14fb0102wp4y.html
+
+http://www.it165.net/admin/html/201403/2629.html
+
+
+
+*守护进程启动rsync
+ /usr/local/bin/rsync --daemon
+
+
+
+*停止命令
+
+cat /var/run/rsyncd.pid | xargs kill -9 && rm -rf /var/run/rsyncd.pid。
+
+
+
+
+*测试
+rsync -avH root@192.168.101.43::hadoop /test
+rsync -avzP --delete --progress --password-file=/etc/rsyncd.passwd root@192.168.101.30::test /test
+
+
+
+其他命令
+
+1. 查看重启rsync
+
+netstat -nutlp | grep :873 
+
+然后kill pid再启动
+
+2. 查看重启inotify
+
+ps -ef|grep inotify 
+
+kill pid ,启动
+
+
+#===============================================================================
+
+安装 inotify-tools
+
+参考 ： https://github.com/rvoicilas/inotify-tools/wiki
+
+inotify-tools is available through the EPEL repository. Install EPEL :
+
+yum install -y epel-release && yum update
+
+Then install package:
+
+yum install inotify-tools
+
+v3.14-8.el7.×86_64 as of 4-18-2018
+
+
+
+
+
+#================================================================================
+测试
+
+rsync -av -e 'ssh -p 12768' /workspace/test1 wedonet@192.168.198.102:/workspace/test2    Ok
+
+rsync -avzP /workspace/test1/ wedonet@192.168.198.102::test/

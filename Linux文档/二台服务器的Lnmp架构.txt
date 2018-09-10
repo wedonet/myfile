@@ -1,0 +1,33 @@
+试验对象
+
+1. 123.150.143.153 服务器  ,server_2, 172.16.32.32,
+2. 127.150.143.175 服务器
+
+虚拟出的IP  123.150.143.167
+
+
+# 安装Docker环境
+
+
+# 建立web1
+
+
+# 安装配置deepalived，虚拟IP
+
+# web双向同步
+
+# mysql 双主
+
+# mysql 自动备份
+
+-- # keepalived监测http
+
+#-- keepalived监测mysql
+
+
+# 装 nmon
+
+
+# 每天自动释放内存
+
+Done

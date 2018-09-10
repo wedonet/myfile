@@ -1,0 +1,74 @@
+# 安装
+
+解压到 /usr/local/sersync下
+
+
+#全局调用 
+
+sersync2 复制到 /usr/local/bin
+
+
+# 修改配置文件
+
+# 设置密码
+
+echo "123456" > /root/passwd
+chmod 600 /root/passwd
+
+
+
+# 启动sersync
+
+sersync2 -r -d -o /usr/local/sersync/confxml.xml
+
+sersync2 -d -o /usr/local/sersync/confxml.xml
+
+
+添加删除一个文件进行验证
+
+#开机启动
+
+
+#设置开机启动
+
+echo "sersync2 -d -o /usr/local/sersync/confxml_gitlab.xml" >> /etc/rc.local 
+
+chmod +x /etc/rc.d/rc.local   #否则重启不执行
+
+
+//# 设置环境变量：
+
+//echo "export PATH=$PATH:/usr/local/sersync/bin/" >> /etc/profile 
+
+
+# 重启操作如下：
+
+killall /usr/local/sersync/sersync2 && /usr/local/sersync/sersync2 -r -d -o /usr/local/sersync/confxml.xml
+
+killall sersync2 && /usr/local/sersync/sersync2 -r -d -o /usr/local/sersync/confxml.xml
+
+
+查看状态
+
+ps aux | grep sersync
+
+
+#自动备份开始后，先进行一次手动备份
+
+rsync  -avz  --password-file=/root/passwd --exclude-from=/usr/local/sersync/exclude_workspace.list /usr/local/workspace/  repl@192.168.198.102::workspace
+
+
+
+
+# 附 刷新rc.local设置
+
+source /etc/profile 
+
+
+
+rsync  -avz  --password-file=/root/passwd  /usr/local/workspace/812_gitlab/data/backups/  repl@172.16.32.33::gitlab
+
+
+
+
+rsync  -avz  --password-file=/root/passwd  /usr/local/nginx/html/1626_wy_laravel55/  repl@172.16.32.33::waiguoyudaxue
