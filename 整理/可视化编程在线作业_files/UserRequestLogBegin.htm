@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>用户在线日志</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=11">
+    <script src="UserRequestLogBegin_data/jquery-1.js"></script>
+    <script type="text/javascript">
+        //绑定beforeunload事件
+        $(document).ready(function () {
+
+            //记录日志
+            function UserRequestLogEnd() {
+                if ("False" == "True") {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Common/Statistics/UserRequestLogEnd?requestPageId=43bee748-396b-4d46-9afa-d0a57c2d8fd1&t=13fbc9df-e6dd-49ee-af4d-60b32880a812",
+                        async: false
+                    });
+                }
+            }
+
+            if ($.browser.webkit) {
+                $(window).unload(function () { });
+            }
+            $(window).bind('beforeunload', function () {
+                UserRequestLogEnd();
+            });
+
+            //只增加课程空间定时记录
+            var istrue = false;
+
+            if (istrue) {
+                setInterval(function () {
+                    UserRequestLogEnd();
+                }, 60000);
+            }
+        });
+    </script>
+</head>
+<body>
+
+
+</body></html>
